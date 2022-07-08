@@ -2,6 +2,8 @@
 
 
 #include "ShooterCharacter.h"
+#include "GameFramework\SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -9,6 +11,16 @@ AShooterCharacter::AShooterCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Create camera boom(pulls in toweards the character if there is a collision)
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->TargetArmLength = 300.f; // Camera follow this distance behind the character
+	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on controller
+
+	// Create a FollowCamera
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom,USpringArmComponent::SocketName); // Attach camera to end of boom
+	FollowCamera->bUsePawnControlRotation = false; // Camera dose not rotate relative to arm
 }
 
 // Called when the game starts or when spawned
