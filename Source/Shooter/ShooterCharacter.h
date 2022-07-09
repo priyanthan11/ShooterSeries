@@ -37,6 +37,9 @@ protected:
 	**/
 	void LookUpRate(float Rate);
 
+	//Called when firebutton pressed or called
+	void FireWeapon();
+
 
 public:	
 	// Called every frame
@@ -58,6 +61,9 @@ private:
 	// Base Look up/down rate, in deg/sec. other scaling may affect final rate
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 		float BaseLookUpRate;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	class USoundCue* FireSound;
 public:
 	// Returns camera boom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
