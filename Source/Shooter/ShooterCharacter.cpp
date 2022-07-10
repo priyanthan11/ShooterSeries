@@ -24,6 +24,7 @@ AShooterCharacter::AShooterCharacter():
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 300.f; // Camera follow this distance behind the character
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on controller
+	CameraBoom->SocketOffset = FVector(0.f, 50.f, 50.f);
 
 	// Create a FollowCamera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -32,11 +33,11 @@ AShooterCharacter::AShooterCharacter():
 
 	//Dont rotate when the controller rotate. Let the controller onlyaffect the camera.
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
-	//Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true;//Character moves in the directon of input
+	//Configure character movement 
+	GetCharacterMovement()->bOrientRotationToMovement = false;//Character moves in the directon of input
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
@@ -112,6 +113,65 @@ void AShooterCharacter::FireWeapon()
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, SocketTransform);
 		}
 
+		// Get Current size of viewport
+		FVector2D ViewportSize;
+		if (GEngine && GEngine->GameViewport)
+		{
+			GEngine->GameViewport->GetViewportSize(ViewportSize);
+		}
+
+		// Get Screen space location of crosshairs
+		FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
+		CrosshairLocation.Y -= 50.f;
+		FVector CrosshairWorldPossition;
+		FVector CrosshairWorldDirection;
+
+		// Get world position and direction of crosshair
+		bool bScreentoWorld = UGameplayStatics::DeprojectScreenToWorld(
+			UGameplayStatics::GetPlayerController(this, 0), 
+			CrosshairLocation, CrosshairWorldPossition, 
+			CrosshairWorldDirection);
+		 
+		// was deprojection sucessful?
+		if (bScreentoWorld)
+		{
+			FHitResult ScreenTraceHit;
+			const FVector Start = CrosshairWorldPossition;
+			const FVector End = CrosshairWorldPossition + CrosshairWorldDirection * 50'000.f;
+
+			// set beamednpoint to line trace end point
+			FVector BeamEndpoint = End;
+
+			// Trace outward from crosshairs world location
+			GetWorld()->LineTraceSingleByChannel(ScreenTraceHit, Start, End, ECollisionChannel::ECC_Visibility);
+
+			// was thre a trace hit?
+			if (ScreenTraceHit.bBlockingHit)
+			{
+				// BeamEndPoint is now trace hit location
+				BeamEndpoint = ScreenTraceHit.Location;
+				if (ImpactParticles)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), 
+					ImpactParticles, 
+					ScreenTraceHit.Location);
+				}
+
+			} 
+
+			if (BeamParticles)
+			{
+				UParticleSystemComponent* Beam = 
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+				BeamParticles, SocketTransform);
+				if (Beam)
+				{
+					Beam->SetVectorParameter(FName("Target"), BeamEndpoint);
+				}
+			}
+		}
+
+		/*
 		FHitResult FireHit;
 		const FVector Start = SocketTransform.GetLocation();
 		const FQuat Rotation = SocketTransform.GetRotation();
@@ -141,7 +201,7 @@ void AShooterCharacter::FireWeapon()
 				Beam->SetVectorParameter(FName("Target"), BeamEndPoint);
 			}
 		}
-
+		*/
 	}
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && HipFireMontage)
