@@ -138,9 +138,6 @@ void AShooterCharacter::FireWeapon()
 			}
 		}
 
-
-	
-
 	}
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && HipFireMontage)
@@ -208,7 +205,7 @@ bool AShooterCharacter::GetBeamEndLocation(const FVector& MuzzleSocketLocation, 
 			WeaponTraceEnd,
 			ECollisionChannel::ECC_Visibility);
 
-		if (WeaponTraceHit.bBlockingHit) // Obj between bareel and BeamEndPoint?
+		if (WeaponTraceHit.bBlockingHit) // Obj between barrel and BeamEndPoint?
 		{
 			OutBeamLocation = WeaponTraceHit.Location;
 		}
