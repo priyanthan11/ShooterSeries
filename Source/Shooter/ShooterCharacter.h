@@ -60,10 +60,16 @@ private:
 	float BaseTurnRate;
 	// Base Look up/down rate, in deg/sec. other scaling may affect final rate
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-		float BaseLookUpRate;
-
+	float BaseLookUpRate;
+	// Randomize fire sound cue
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	class USoundCue* FireSound;
+	//  Flash spawned at muzzel location
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	class UParticleSystem* MuzzleFlash;
+	/* Montage for firing weapon */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* HipFireMontage;
 public:
 	// Returns camera boom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

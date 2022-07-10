@@ -7,6 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter():
@@ -96,6 +98,39 @@ void AShooterCharacter::FireWeapon()
 	{
 		UGameplayStatics::PlaySound2D(this,FireSound);
 	}
+	 // We need to store barrel socket location so
+	// if the socket exist on the skeletal it will return in but not the actual location
+	// just the socket name
+	const USkeletalMeshSocket* BarrelSocket = GetMesh()->GetSocketByName("BarrelSocket");
+	if (BarrelSocket)
+	{
+		// Get the actual  Transform (location, Rotation, Scale)  of the socket 
+		const FTransform SocketTransform = BarrelSocket->GetSocketTransform(GetMesh());
+		if (MuzzleFlash)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, SocketTransform);
+		}
+
+		FHitResult FireHit;
+		const FVector Start = SocketTransform.GetLocation();
+		const FQuat Rotation = SocketTransform.GetRotation();
+		const FVector RoationAxis = Rotation.GetAxisX();
+		const FVector End = Start + RoationAxis * 50'000.f;
+
+		GetWorld()->LineTraceSingleByChannel(FireHit, Start, End, ECollisionChannel::ECC_Visibility);
+		if (FireHit.bBlockingHit)
+		{
+			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.f);
+			DrawDebugPoint(GetWorld(), FireHit.Location, 5.f, FColor::Red, false, 2.f);
+		}
+	}
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && HipFireMontage)
+	{
+		AnimInstance->Montage_Play(HipFireMontage);
+		AnimInstance->Montage_JumpToSection(FName("StartFire"));
+	}
+
 }
 
 // Called every frame
