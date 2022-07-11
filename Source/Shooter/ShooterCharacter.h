@@ -37,11 +37,30 @@ protected:
 	**/
 	void LookUpRate(float Rate);
 
+	/**
+	* Rotate Controller Based on mouse X Movement
+	* @param Value the input Value from mouse movement
+	**/
+	void Turn(float Value);
+	/**
+	* Rotate Controller Based on mouse Y Movement
+	* @param Value the input Value from mouse movement
+	**/
+	void LookUp(float Value);
+
 	//Called when firebutton pressed or called
 	void FireWeapon();
 
 	bool GetBeamEndLocation(const FVector& MuzzleSocketLocation, FVector& OutBeamLocation);
+	/** Set bAiming true or flase with button pressed**/
+	void AimingButtonPressed();
+	void AimingButtonReleased();
 
+	/* Set Zooming Shoothly when aiming*/
+	void CameraInterpZoom(float DeltaTime);
+
+	/*Set BaseTurnRate and BaseLookUpRate Based on Aiming*/
+	void SetLookRates();
 
 public:	
 	// Called every frame
@@ -63,6 +82,35 @@ private:
 	// Base Look up/down rate, in deg/sec. other scaling may affect final rate
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	float BaseLookUpRate;
+	  
+	/* Turn rate while not aiming*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float HipTurnRate;
+	/*Look up rate when not aiming*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float HipLookUpRate;
+
+	/* Turn rate when aiming */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float AimingTurnRate;
+	/* lookup rate when aiming*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float AimingLookUpRate;
+
+	/* Scale factor for mouse look sensitivity. Lookup rate when not aiming*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"), meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
+	float MouseHipTurnRate;
+	/* Scale factor for mouse look sensitivity. Lookup rate when not aiming*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"), meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
+	float MouseHipLookupRate;
+	/* Scale factor for mouse look sensitivity. Turn rate when not aiming*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"), meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
+	float MouseAimingLookUpRate;
+	/* Scale factor for mouse look sensitivity. Turn rate when  aiming*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"), meta = (ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
+	float MouseAimingTurnRate;
+
+
 	// Randomize fire sound cue
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	class USoundCue* FireSound;
@@ -78,10 +126,33 @@ private:
 	/* Smoke Trail For Bullets*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	UParticleSystem* BeamParticles;
+	/** True when aiming **/
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	bool bAiming;
+	 /* Default camera FOV value*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float CameraDefaultFOV;
+
+	/** FOV Value when zoomed **/
+	float CameraZoomedFOV;
+
+	/*Current FOV this frame*/
+	float CameraCurrentFOV;
+	/*InterpSpeed for zooming when aiming*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float ZoomInterpSpeed;
+
+
+
+
+
+
 public:
 	// Returns camera boom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	//Returns FollowCamera Subobject
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	
+	FORCEINLINE bool GetAiming() const { return bAiming; }
 
 };
