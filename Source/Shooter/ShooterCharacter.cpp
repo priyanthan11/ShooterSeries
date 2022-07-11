@@ -17,7 +17,7 @@ AShooterCharacter::AShooterCharacter() :
 	// Base Rate Turning/Lookingup
 	BaseTurnRate(45.f),
 	BaseLookUpRate(45.f),
-	
+
 	// Turn rates for aiming/not aiming
 	HipTurnRate(90.f),
 	HipLookUpRate(90.f),
@@ -36,7 +36,18 @@ AShooterCharacter::AShooterCharacter() :
 	CameraDefaultFOV(0.f), // Set in beginplay
 	CameraZoomedFOV(35.f),
 	CameraCurrentFOV(0.f),
-	ZoomInterpSpeed(20.f)
+	ZoomInterpSpeed(20.f),
+
+	// Crosshair SpreadFactors
+	CrosshairSpreadMultiplier(0.f),
+	CrosshairVelocityFactor(0.f),
+	CrosshairInAirFactor(0.f),
+	CrosshairAimFactor(0.f),
+	CorsshairShootingFactor(0.f),
+
+	//BulletFire timer Variable
+	ShootTimeDuration(0.05f),
+	bFiringBullet(false)
 
 	
 {
@@ -203,7 +214,8 @@ void AShooterCharacter::FireWeapon()
 		AnimInstance->Montage_Play(HipFireMontage);
 		AnimInstance->Montage_JumpToSection(FName("StartFire"));
 	}
-
+	// StartBulletFireTImer for corsshair
+	StartCrosshairBulletFire();
 }
 
 bool AShooterCharacter::GetBeamEndLocation(const FVector& MuzzleSocketLocation, FVector& OutBeamLocation)
@@ -217,7 +229,7 @@ bool AShooterCharacter::GetBeamEndLocation(const FVector& MuzzleSocketLocation, 
 
 	// Get Screen space location of crosshairs
 	FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
-	CrosshairLocation.Y -= 50.f;
+	//CrosshairLocation.Y -= 50.f;
 	FVector CrosshairWorldPossition;
 	FVector CrosshairWorldDirection;
 
@@ -324,13 +336,60 @@ void AShooterCharacter::CalculateCrosshairSpread(float DeltaTime)
 	FVector2D VeclocityMultiplierRange{ 0.f,1.f };
 	FVector Velocity{ GetVelocity() };
 	Velocity.Z = 0.f;
-
+	// Calculate crosshair in Velocity factor
 	CrosshairVelocityFactor = FMath::GetMappedRangeValueClamped(
 	WalkSpeedRange, VeclocityMultiplierRange,
 	Velocity.Size());
 
+	// Calculate crosshair in air factor
+	if (GetCharacterMovement()->IsFalling()) // is in air ?
+	{
+		// Spread the crosshair slowly while in air
+		CrosshairInAirFactor = FMath::FInterpTo
+		(CrosshairInAirFactor,2.25f, DeltaTime, 2.25f );
+	}
+	else // character on the ground
+	{
+		// Shrink the crosshairs rapidly while on the ground
+		CrosshairInAirFactor = FMath::FInterpTo
+		(CrosshairInAirFactor, 0.f, DeltaTime, 30.f);
+	}
+	// Calculate crosshair Aim Factor
+	if (bAiming) // Are we aiming
+	{
+		// Shrink crosshair a small amount quickly
+		CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.8f, DeltaTime, 30.f);
+	}
+	else
+	{
+		// Spread Crosshair back to very quickly
+		CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.f, DeltaTime, 30.f);
+	}
+	// True 0.05s after firing
+	if (bAiming)
+	{
+		CorsshairShootingFactor = FMath::FInterpTo
+		(CorsshairShootingFactor, 0.3f, DeltaTime, 60.f);
+	}
+	else
+	{
+		CorsshairShootingFactor = FMath::FInterpTo
+		(CorsshairShootingFactor, 0.0f, DeltaTime, 60.f);
+	}
 
-	CrosshairSpreadMultiplier = 0.5f + CrosshairVelocityFactor;
+	CrosshairSpreadMultiplier = 0.5f + CrosshairVelocityFactor + CrosshairInAirFactor - CrosshairAimFactor + CorsshairShootingFactor;
+}
+
+void AShooterCharacter::StartCrosshairBulletFire()
+{
+	bFiringBullet = true;
+
+	GetWorldTimerManager().SetTimer(CrosshairShootTimer, this, &AShooterCharacter::FinishCrosshairBullerFire, ShootTimeDuration);
+}
+
+void AShooterCharacter::FinishCrosshairBullerFire()
+{
+	bFiringBullet = false;
 }
 
 // Called every frame
@@ -344,6 +403,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 	// Change Look sensitivity based on aiming
 	SetLookRates();
 
+	CalculateCrosshairSpread(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -366,5 +426,10 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("AimingButton", IE_Pressed, this, &AShooterCharacter::AimingButtonPressed);
 	PlayerInputComponent->BindAction("AimingButton", IE_Released, this, &AShooterCharacter::AimingButtonReleased);
 
+}
+
+float AShooterCharacter::GetCrosshairSpreadMultiplier() const
+{
+	return CrosshairSpreadMultiplier;
 }
 
