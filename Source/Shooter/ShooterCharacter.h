@@ -68,7 +68,17 @@ protected:
 	void StartCrosshairBulletFire();
 
 	UFUNCTION()
-	void FinishCrosshairBullerFire();
+	void FinishCrosshairBulletFire();
+
+
+	void FireButtonPressed();
+
+	void FireButtonReleased();
+
+	void StartFireTimer();
+
+	UFUNCTION()
+	void AutoFireReset();
 
 public:	
 	// Called every frame
@@ -176,8 +186,17 @@ private:
 
 	FTimerHandle CrosshairShootTimer;
 
+	/** Left Mouse button or console trigger pressed*/
+	bool bFireButtonPressed;
 
+	/** True when we can fire false when waiting for the timer **/
+	bool bShouldFire;
 
+	/** Rate of automatioc Gun fire**/
+	float AutomaticFireRate;
+
+	/* Set timer between gun shots*/
+	FTimerHandle AutoFireTimer;
 
 public:
 	// Returns camera boom subobject
