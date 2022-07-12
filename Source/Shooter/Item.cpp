@@ -15,7 +15,6 @@ AItem::AItem()
 	ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMesh"));
 	SetRootComponent(ItemMesh);
 
-
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
 	CollisionBox->SetupAttachment(ItemMesh);
 	CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -31,7 +30,12 @@ void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PickupWidget->SetVisibility(false);
+	// Hide pickup widget
+	if (PickupWidget != nullptr)
+	{
+		PickupWidget->SetVisibility(false);
+	}
+	
 }
 
 // Called every frame

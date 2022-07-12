@@ -442,7 +442,6 @@ bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult)
 
 	// Get Screen space location of crosshairs
 	FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
-	//CrosshairLocation.Y -= 50.f;
 	FVector CrosshairWorldPossition;
 	FVector CrosshairWorldDirection;
 
@@ -458,7 +457,8 @@ bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult)
 		const FVector Start = CrosshairWorldPossition;
 		const FVector End = Start + CrosshairWorldDirection * 50'000.f;
 
-		GetWorld()->LineTraceSingleByChannel(OutHitResult, Start, End, ECollisionChannel::ECC_Visibility);
+		GetWorld()->LineTraceSingleByChannel(
+			OutHitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
 		if (OutHitResult.bBlockingHit)
 		{
@@ -481,7 +481,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 	SetLookRates();
 
 	CalculateCrosshairSpread(DeltaTime);
-
+	
 	FHitResult ItemTraceResult;
 	TraceUnderCrosshairs(ItemTraceResult);
 	if (ItemTraceResult.bBlockingHit)
@@ -493,6 +493,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 			HitItem->GetPickupWidget()->SetVisibility(true);
 		}
 	}
+	
 }
 
 // Called to bind functionality to input
