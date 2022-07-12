@@ -32,8 +32,12 @@ private:
 	/* Line  trace Collides with box to show HUD widgets */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* CollisionBox;
-	
+	// Popup widget when the player looks at the item
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))	
+	class UWidgetComponent* PickupWidget;
 
 public:
+
+	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
 
 };
