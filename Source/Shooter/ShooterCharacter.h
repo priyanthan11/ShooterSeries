@@ -83,6 +83,9 @@ protected:
 	// Line trace for items under the crosshair
 	bool TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation);
 
+	/* Trace For Items if OverLappedItemCount > 0*/
+	void TraceForItems();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -201,6 +204,11 @@ private:
 	/* Set timer between gun shots*/
 	FTimerHandle AutoFireTimer;
 
+	/* True we should trace for iteam */
+	bool bShouldTraceForItems;
+	/* Number of overlaped AItems */
+	int8 OverlappedItemCount;
+
 public:
 	// Returns camera boom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -211,5 +219,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetCrosshairSpreadMultiplier() const;
+
+	FORCEINLINE int8 GetOverlappedItemCount() const { return OverlappedItemCount; }
+	/** Adds / Subtracts to/from overlappeditem and updates bShouldTrace For Items **/
+	void IncrementOverlappedItemCount(int8 Amount);
 
 };
