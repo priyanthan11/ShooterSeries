@@ -92,12 +92,14 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// For ADS cameraZoom
 	if (FollowCamera)
 	{
 		CameraDefaultFOV = GetFollowCamera()->FieldOfView;
 	}
 
 	CameraCurrentFOV = CameraDefaultFOV; 
+	//---------------------------------------------------------------------//
 }
 
 void AShooterCharacter::MoveForward(float Value)
