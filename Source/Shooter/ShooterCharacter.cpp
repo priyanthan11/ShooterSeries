@@ -12,6 +12,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Item.h"
 #include "Components/WidgetComponent.h"
+#include "Weapon.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -96,9 +97,11 @@ void AShooterCharacter::BeginPlay()
 	if (FollowCamera)
 	{
 		CameraDefaultFOV = GetFollowCamera()->FieldOfView;
+		CameraCurrentFOV = CameraDefaultFOV;
 	}
 
-	CameraCurrentFOV = CameraDefaultFOV; 
+	// Spawn the default weapon and attach to the mesh
+	SpawnDefaultWeapon();
 	//---------------------------------------------------------------------//
 }
 
@@ -481,6 +484,26 @@ void AShooterCharacter::TraceForItems()
 		// item last from should not show widget
 		TraceHitItemLastFrame->GetPickupWidget()->SetVisibility(false);
 	}
+}
+
+void AShooterCharacter::SpawnDefaultWeapon()
+{
+	// Chech the TSubclassOf Variable
+	if (DefaultWeaponClass)
+	{
+		// SPawn the wapon
+		AWeapon* DefaultWeapon = GetWorld()->SpawnActor<AWeapon>(DefaultWeaponClass);
+		// Get the hand Socket
+		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+		if (HandSocket)
+		{
+			// Attach the wapont to the hand socket RightHandSocket
+			HandSocket->AttachActor(DefaultWeapon, GetMesh());
+		}
+		// Set EquippedWeapon to newly spawned weapon
+		EquippedWeapon = DefaultWeapon;
+	}
+
 }
 
 // Called every frame
