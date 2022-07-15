@@ -86,8 +86,11 @@ protected:
 	/* Trace For Items if OverLappedItemCount > 0*/
 	void TraceForItems();
 
+	/*Spawn a default weapon and equips it*/
+	class AWeapon* SpawnDefaultWeapon();
 
-	void SpawnDefaultWeapon();
+	/*Takes a weapon and attaches it the mesh*/
+	void EquipWeapon( AWeapon* WeaponToEquipped);
 
 public:	
 	// Called every frame
