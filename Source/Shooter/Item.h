@@ -132,6 +132,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	float ZCurveTime;
 
+	// X and Y for the item while interping with EquippedInterp
+	float ItemInterpX;
+	float ItemInterpY;
 
 
 public:
