@@ -520,6 +520,8 @@ void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquipped)
 			HandSocket->AttachActor(WeaponToEquipped, GetMesh());
 		}
 		EquippedWeapon = WeaponToEquipped;
+		EquippedWeapon->SetItemState(EItemState::EIS_Equipped);
+
 	}
 
 
