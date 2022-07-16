@@ -118,6 +118,52 @@ void AItem::SetActiveStars()
 	}
 }
 
+void AItem::SetItemProperties(EItemState State)
+{
+	switch (State)
+	{
+	case EItemState::EIS_Pickup:
+		// Set Mesh Properties
+		ItemMesh->SetSimulatePhysics(false);
+		ItemMesh->SetVisibility(true);
+		ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Set AreaShpre Properties
+		AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		//Set Box Collision Properties
+		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		CollisionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		break;
+	case EItemState::EIS_EquipInterp:
+		break;
+	case EItemState::EIS_PickedUp:
+		break;
+	case EItemState::EIS_Equipped:
+		// Set Mesh Properties
+		ItemMesh->SetSimulatePhysics(false);
+		ItemMesh->SetVisibility(true);
+		ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Set AreaShpre Properties
+		AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Set Box Collision Properties
+		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	case EItemState::EIS_Falling:
+		break;
+	case EItemState::EIS_MAX:
+		break;
+	default:
+		break;
+	}
+}
+
 // Called every frame
 void AItem::Tick(float DeltaTime)
 {
