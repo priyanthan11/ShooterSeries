@@ -68,6 +68,8 @@ protected:
 	// Called when iteminterp timer finished
 	void FinishInterping();
 
+	void ItemInterp(float DeltaTime);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -106,7 +108,7 @@ private:
 	EItemState ItemState;
 
 	// The Curve asset to use for the items z location with inerpolation
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* ItemZCurve;
 
 	// Starting locationwhen interp begins
@@ -120,7 +122,7 @@ private:
 	bool bInterping;
 
 	//Plays when we start interping
-	FTimerHandle ItemInterTimer;
+	FTimerHandle ItemInterpTimer;
 
 	// Pointer to Character
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
