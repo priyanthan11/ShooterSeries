@@ -63,6 +63,11 @@ protected:
 
 	/*Set item property component based on the state*/
 	void SetItemProperties(EItemState State);
+
+
+	// Called when iteminterp timer finished
+	void FinishInterping();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -82,7 +87,7 @@ private:
 	 /** Enable iteam tracing when overlaps **/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* AreaSphere;
-
+ 
 	/*Name Which appears on the pickup widget */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	FString ItemName;
@@ -101,8 +106,31 @@ private:
 	EItemState ItemState;
 
 	// The Curve asset to use for the items z location with inerpolation
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* ItemZCurve;
+
+	// Starting locationwhen interp begins
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	FVector ItemInterpStartLocation;
+
+	//Target interp location in frot the camera
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	FVector CameraTargetLocation;
+	// When interping
+	bool bInterping;
+
+	//Plays when we start interping
+	FTimerHandle ItemInterTimer;
+
+	// Pointer to Character
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	class AShooterCharacter* Character;
+
+	// Duration of the curve and timer
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	float ZCurveTime;
+
+
 
 public:
 
@@ -113,5 +141,8 @@ public:
 	FORCEINLINE EItemState GetItemState() const { return ItemState; }
 	void SetItemState(EItemState State);
 	FORCEINLINE USkeletalMeshComponent* GetItemMesh() const { return ItemMesh; }
+
+	// Call from the shooter Character class
+	void StartItemCurve(AShooterCharacter* Char);
 
 };
