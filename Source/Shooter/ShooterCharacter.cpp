@@ -61,7 +61,11 @@ AShooterCharacter::AShooterCharacter() :
 	bFireButtonPressed(false),
 
 	// Item Trace Variables
-	bShouldTraceForItems(false)
+	bShouldTraceForItems(false),
+
+	//Camera interpLocation
+	CameraInterpDistance(250.f),
+	CameraInterpElevation(65.f)
 
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
