@@ -1,4 +1,4 @@
- // Fill out your copyright notice in the Description page of Project Settings.
+  // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -97,6 +97,13 @@ protected:
 
 	void SelectButtonPressed();
 	void SelectButtonReleased();
+
+	// Drop currently equiped weapon and equipe TraceHitItems
+	void SwapWeapon(AWeapon* WeaponToSwap);
+
+
+
+
 
 public:	
 	// Called every frame
@@ -232,6 +239,11 @@ private:
 	/*Set this in blueprints for the default weapon class*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AWeapon>DefaultWeaponClass;
+
+	/*The item currently hitby out trace in trace for items (could be null)*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "combat", meta = (AllowPrivateAccess = "true"))
+	AItem* TraceHitItem;
+	
 public:
 	// Returns camera boom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
