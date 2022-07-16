@@ -27,7 +27,7 @@ protected:
 	
 private:
 
-	FTimerHandle ThrowWeaponHandle;
+	FTimerHandle ThrowWeaponTimer;
 	float ThrowWeaponTime;
 	bool bFalling;
 	

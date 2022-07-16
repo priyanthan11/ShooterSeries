@@ -31,8 +31,9 @@ AShooterCharacter::AShooterCharacter() :
 	// Mouse Look sensitivity scale factors
 	MouseHipTurnRate(1.0f),
 	MouseHipLookupRate(1.0f),
-	MouseAimingTurnRate(0.2f),
 	MouseAimingLookUpRate(0.2f),
+	MouseAimingTurnRate(0.2f),
+	
 
 	// true when aiming weapon
 	bAiming(false),
@@ -55,8 +56,8 @@ AShooterCharacter::AShooterCharacter() :
 	bFiringBullet(false),
 
 	//Automatic  fire Variables
-	AutomaticFireRate(0.1f),
 	bShouldFire(true),
+	AutomaticFireRate(0.1f),
 	bFireButtonPressed(false),
 
 	// Item Trace Variables
