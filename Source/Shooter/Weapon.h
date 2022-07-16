@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -13,5 +13,24 @@ UCLASS()
 class SHOOTER_API AWeapon : public AItem
 {
 	GENERATED_BODY()
+
+public:
+	AWeapon();
+
+	virtual void Tick(float DeltaTime) override;
+
+	void ThrowWeapon();
+
+protected:
+		
+	void StopFalling();
+	
+private:
+
+	FTimerHandle ThrowWeaponHandle;
+	float ThrowWeaponTime;
+	bool bFalling;
+	
+
 	
 };
