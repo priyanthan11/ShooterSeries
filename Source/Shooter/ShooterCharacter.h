@@ -267,7 +267,8 @@ public:
 	/** Adds / Subtracts to/from overlappeditem and updates bShouldTrace For Items **/
 	void IncrementOverlappedItemCount(int8 Amount);
 
-
 	FVector GetCameraInterpLocation();
+
+	void GetPickupItem(AItem* Item);
 
 };

@@ -63,7 +63,7 @@ AShooterCharacter::AShooterCharacter() :
 	// Item Trace Variables
 	bShouldTraceForItems(false),
 
-	//Camera interpLocation
+	//Camera interpLocation 
 	CameraInterpDistance(250.f),
 	CameraInterpElevation(65.f)
 
@@ -629,5 +629,14 @@ FVector AShooterCharacter::GetCameraInterpLocation()
 
 	//Desired Location = CameraWorldLocation + CameraForward*A +Up * B
 	return CameraWorldLocation + CameraForward * CameraInterpDistance + FVector(0.f, 0.f, CameraInterpElevation);
+}
+
+void AShooterCharacter::GetPickupItem(AItem* Item)
+{
+	auto Weapon = Cast<AWeapon>(Item);
+	if (Weapon)
+	{
+		SwapWeapon(Weapon);
+	}
 }
 
