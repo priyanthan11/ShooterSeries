@@ -13,7 +13,14 @@ AItem::AItem():
 ItemName(FString("Default")),
 ItemCount(0),
 ItemRarity(EItemRarity::EIR_Common),
-ItemState(EItemState::EIS_Pickup)
+ItemState(EItemState::EIS_Pickup),
+
+// Item Interp Variables
+ZCurveTime(0.7f),
+ItemInterpStartLocation(FVector(0.f)),
+CameraTargetLocation(FVector(0.f)),
+bInterping(false)
+
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -141,6 +148,19 @@ void AItem::SetItemProperties(EItemState State)
 
 		break;
 	case EItemState::EIS_EquipInterp:
+		PickupWidget->SetVisibility(false);
+		// Set Mesh Properties
+		ItemMesh->SetSimulatePhysics(false);
+		ItemMesh->SetEnableGravity(false);
+		ItemMesh->SetVisibility(true);
+		ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Set AreaShpre Properties
+		AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Set Box Collision Properties
+		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
 	case EItemState::EIS_PickedUp:
 		break;
@@ -151,7 +171,6 @@ void AItem::SetItemProperties(EItemState State)
 		ItemMesh->SetEnableGravity(false);
 		ItemMesh->SetVisibility(true);
 		ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-		ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//Set AreaShpre Properties
 		AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -195,4 +214,20 @@ void AItem::SetItemState(EItemState State)
 	SetItemProperties(State);
 }
 
+void AItem::StartItemCurve(AShooterCharacter* Char)
+{
+	// Store a handle to the character
+	Character = Char;
+	// Store initial location of Item
+	ItemInterpStartLocation = GetActorLocation();
+	bInterping = true;
+
+	SetItemState(EItemState::EIS_EquipInterp);
+
+}
+
+void AItem::FinishInterping()
+{
+	Character->GetPickupItem(this);
+}
 
