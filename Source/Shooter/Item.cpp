@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
 #include "ShooterCharacter.h"
+#include "Camera/CameraComponent.h"
 
 
 // Sets default values
@@ -23,7 +24,9 @@ bInterping(false),
 
 // X and Y interpvalues
 ItemInterpX(0.f),
-ItemInterpY(0.f)
+ItemInterpY(0.f),
+
+InterpInitialYawOffset(0.f)
 
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -232,6 +235,14 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 
 	GetWorldTimerManager().SetTimer(ItemInterpTimer, this, &AItem::FinishInterping, ZCurveTime);
 
+	// Get Initial Yaw of the camera
+	const float CameraRotationYaw = Character->GetFollowCamera()->GetComponentRotation().Yaw;
+
+	// Get Inital Yaw of the Item
+	const float ItemRotationYaw = GetActorRotation().Yaw;
+
+	// Initial offset between camera & Item
+	InterpInitialYawOffset = ItemRotationYaw - CameraRotationYaw;
 }
 
 void AItem::FinishInterping()
@@ -273,6 +284,12 @@ void AItem::ItemInterp(float DeltaTime)
 
 		SetActorLocation(ItemLocation, true, nullptr, ETeleportType::TeleportPhysics);
 
+		 //Camera Rotation this frame
+		const FRotator CameraRotation{ Character->GetFollowCamera()->GetComponentRotation() };
+		// Camera Rotation + IntialYawOffset
+		FRotator ItemRotation{ 0.f,CameraRotation.Yaw + InterpInitialYawOffset,0.f };
+
+		SetActorRotation(ItemRotation, ETeleportType::TeleportPhysics);
 
 	}
 }
