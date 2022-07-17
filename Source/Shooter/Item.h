@@ -140,6 +140,10 @@ private:
 	float InterpInitialYawOffset;
 
 
+	// The Curve asset to use for the items to scale when inerpolation
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	class UCurveFloat* ItemScaleCurve;
+
 public:
 
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }

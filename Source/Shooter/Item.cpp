@@ -249,6 +249,9 @@ void AItem::FinishInterping()
 {
 	bInterping = false;
 	Character->GetPickupItem(this);
+
+	// Set Actor to Scale 1 when its shrink intropolation
+	SetActorScale3D(FVector(1.f));
 }
 
 void AItem::ItemInterp(float DeltaTime)
@@ -291,6 +294,12 @@ void AItem::ItemInterp(float DeltaTime)
 
 		SetActorRotation(ItemRotation, ETeleportType::TeleportPhysics);
 
+		if (ItemScaleCurve)
+		{
+			const float ScaleCurveCalue = ItemScaleCurve->GetFloatValue(ElapesTime);
+
+			SetActorScale3D(FVector(ScaleCurveCalue, ScaleCurveCalue, ScaleCurveCalue));
+		}
 	}
 }
 
