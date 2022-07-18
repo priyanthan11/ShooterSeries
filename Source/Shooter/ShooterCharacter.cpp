@@ -396,7 +396,15 @@ void AShooterCharacter::AutoFireReset()
 	else
 	{
 		// Reload Weapon
+		ReloadWeapon();
 	}
+}
+
+void AShooterCharacter::FinishReload()
+{
+	// TODO: Updaate AmmoMap
+	CombatState = ECombatState::ECS_Unoccupied;
+
 }
 
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
@@ -621,6 +629,37 @@ void AShooterCharacter::PlayGunFireMontage()
 	StartCrosshairBulletFire();
 }
 
+void AShooterCharacter::ReloadButtonPressed()
+{
+	ReloadWeapon();
+}
+
+void AShooterCharacter::ReloadWeapon()
+{
+	if (CombatState != ECombatState::ECS_Unoccupied) return;
+	
+	// Do we have currnet ammo of type weapon?
+	// TODO: Create a function to check ammo for current Weapon
+	// TODO: Create bool CarryingWeapon();
+
+	if (true) // Replace with carrying Ammo
+	{
+		// Create enum for weapon types
+		// TODO: Create switch on equipped weapon-> WeaponType
+
+		FName MontageSection(TEXT("ReloadSMG"));
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (ReloadMontage && AnimInstance)
+		{
+			AnimInstance->Montage_Play(ReloadMontage);
+			AnimInstance->Montage_JumpToSection(MontageSection);
+		}
+
+	}
+
+}
+
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
 {
@@ -664,6 +703,10 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAction("Select", IE_Pressed, this, &AShooterCharacter::SelectButtonPressed);
 	PlayerInputComponent->BindAction("Select", IE_Released, this, &AShooterCharacter::SelectButtonReleased);
+
+	// Reload Weapon
+	PlayerInputComponent->BindAction("ReloadButton", IE_Pressed, this, &AShooterCharacter::ReloadButtonPressed);
+
 
 }
 

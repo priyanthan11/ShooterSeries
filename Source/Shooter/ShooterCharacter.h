@@ -1,4 +1,4 @@
-  // Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -126,9 +126,17 @@ protected:
 	// Check to make sure that our weapon have ammo
 	bool WeaponHasAmmo();
 
+	// Fire Weapon
 	void PlayFireSound();
 	void SentBullet();
 	void PlayGunFireMontage();
+
+	//ReloadWeapon
+	void ReloadButtonPressed();
+	void ReloadWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishReload();
 
 public:	
 	// Called every frame
@@ -290,7 +298,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	ECombatState CombatState;
 
-
+	/* Montage for Reload weapon */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* ReloadMontage;
 
 	
 public:
