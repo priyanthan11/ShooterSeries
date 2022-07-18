@@ -128,7 +128,7 @@ protected:
 	void ReloadWeapon();
 
 	UFUNCTION(BlueprintCallable)
-	void FinishReload();
+	void FinishReloading();
 
 	//Check to see if ammo we have the equpped weapon's ammo
 	bool CarringAmmo();

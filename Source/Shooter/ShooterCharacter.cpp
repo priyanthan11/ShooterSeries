@@ -400,10 +400,40 @@ void AShooterCharacter::AutoFireReset()
 	}
 }
 
-void AShooterCharacter::FinishReload()
+void AShooterCharacter::FinishReloading()
 {
-	// TODO: Updaate AmmoMap
+	// Update Combat State
 	CombatState = ECombatState::ECS_Unoccupied;
+
+	if (EquippedWeapon == nullptr) return;
+	
+	const auto AmmoType{ EquippedWeapon->GetAmmoType() };
+
+	//Update Ammo Map
+	if (AmmoMap.Contains(AmmoType))
+	{
+		// Ammount of ammo the character carring of the equippedWeapon
+		int32 CarriedAmmo = AmmoMap[AmmoType];
+
+		// Space left in the magazine of equippedWeapon
+		const int32 MagEmptySpace = EquippedWeapon->GetMagazineCapasity() - EquippedWeapon->GetAmmo();
+
+		if (MagEmptySpace > CarriedAmmo)
+		{
+			// Reload the magazine with all the ammo we are carring
+			EquippedWeapon->ReloadAmmo(CarriedAmmo);
+			CarriedAmmo = 0;
+			AmmoMap.Add(AmmoType, CarriedAmmo);
+		}
+		else
+		{
+			// Fill the magazine
+			EquippedWeapon->ReloadAmmo(MagEmptySpace);
+			CarriedAmmo -= MagEmptySpace;
+			AmmoMap.Add(AmmoType, CarriedAmmo);
+		}
+	}
+	
 
 }
 

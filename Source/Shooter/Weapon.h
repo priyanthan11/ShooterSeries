@@ -60,6 +60,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
 	FName ReloadMontageSection;
 
+	//Maximum Ammo that our weapon hold
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
+	int32 MagazineCapacity;
+
 public:
 
 	FORCEINLINE int32 GetAmmo() const { return Ammo; }
@@ -70,4 +74,8 @@ public:
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 	FORCEINLINE EAmmoType GetAmmoType() const { return AmmoType; }
 	FORCEINLINE FName GetReloadMontageSection() const { return ReloadMontageSection; }
+	FORCEINLINE int32 GetMagazineCapasity() const { return MagazineCapacity; }
+
+	void ReloadAmmo(int32 Ammount);
+
 };
