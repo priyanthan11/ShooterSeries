@@ -4,16 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AmmoType.h"
 #include "ShooterCharacter.generated.h"
-
-UENUM(BlueprintType)
-enum class EAmmoType : uint8
-{
-	EAT_9mm UMETA(DisplayName = "9mm"),
-	EAT_AR	UMETA(DisplayName = "AR"),
-
-	EAT_Max UMETA(DisplayName = "DefaultMax")
-};
 
 UENUM(BlueprintType)
 enum class ECombatState : uint8
@@ -137,6 +129,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FinishReload();
+
+	//Check to see if ammo we have the equpped weapon's ammo
+	bool CarringAmmo();
 
 public:	
 	// Called every frame

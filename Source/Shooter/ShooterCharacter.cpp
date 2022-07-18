@@ -407,6 +407,20 @@ void AShooterCharacter::FinishReload()
 
 }
 
+bool AShooterCharacter::CarringAmmo()
+{
+	if (EquippedWeapon == nullptr) return false;
+	
+	auto AmmoType = EquippedWeapon->GetAmmoType();
+
+	if (AmmoMap.Contains(AmmoType))
+	{
+		return AmmoMap[AmmoType]>0;
+	}
+
+	return false;
+}
+
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
 {
 	// Get Current size of viewport
@@ -637,23 +651,17 @@ void AShooterCharacter::ReloadButtonPressed()
 void AShooterCharacter::ReloadWeapon()
 {
 	if (CombatState != ECombatState::ECS_Unoccupied) return;
+	if (EquippedWeapon == nullptr) return;
 	
 	// Do we have currnet ammo of type weapon?
-	// TODO: Create a function to check ammo for current Weapon
-	// TODO: Create bool CarryingWeapon();
-
-	if (true) // Replace with carrying Ammo
+	if (CarringAmmo()) // Replace with carrying Ammo
 	{
-		// Create enum for weapon types
-		// TODO: Create switch on equipped weapon-> WeaponType
-
-		FName MontageSection(TEXT("ReloadSMG"));
-
+		CombatState = ECombatState::ECS_Reload;
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (ReloadMontage && AnimInstance)
 		{
 			AnimInstance->Montage_Play(ReloadMontage);
-			AnimInstance->Montage_JumpToSection(MontageSection);
+			AnimInstance->Montage_JumpToSection(EquippedWeapon->GetReloadMontageSection());
 		}
 
 	}

@@ -11,7 +11,9 @@ bFalling(false),
 Ammo(0),
 
 //Weapon type
-WeaponType(EWeaponType::EWT_SubmachineGun)
+WeaponType(EWeaponType::EWT_SubmachineGun),
+// Montage Section Name
+ReloadMontageSection(TEXT("Reload_SMG"))
 
 {
 	PrimaryActorTick.bCanEverTick = true;
