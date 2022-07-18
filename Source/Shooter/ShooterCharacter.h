@@ -311,6 +311,7 @@ private:
 	FTransform ClipTransform;
 
 	//ScenComponent to attach to the character hand during reload
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* HandScenComponent;
 	
 public:
