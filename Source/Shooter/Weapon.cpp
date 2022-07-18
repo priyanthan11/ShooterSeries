@@ -4,18 +4,24 @@
 #include "Weapon.h"
 
 AWeapon::AWeapon():
-ThrowWeaponTime(0.7f),
-bFalling(false),
 
-//Ammo
-Ammo(30),
+	ThrowWeaponTime(0.7f),
+	bFalling(false),
 
-//Weapon type
-WeaponType(EWeaponType::EWT_SubmachineGun),
-// Montage Section Name
-ReloadMontageSection(TEXT("Reload_SMG")),
-// Magazine Maximum Capasity
-MagazineCapacity(30)
+	//Ammo
+	Ammo(30),
+
+	//Weapon type
+	WeaponType(EWeaponType::EWT_SubmachineGun),
+
+	// Montage Section Name
+	ReloadMontageSection(TEXT("Reload_SMG")),
+
+	// Magazine Maximum Capasity
+	MagazineCapacity(30),
+
+	// ClipBoneDefault
+	ClipBoneName(TEXT("smg_clip"))
 
 {
 	PrimaryActorTick.bCanEverTick = true;

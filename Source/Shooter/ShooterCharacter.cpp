@@ -451,6 +451,28 @@ bool AShooterCharacter::CarringAmmo()
 	return false;
 }
 
+void AShooterCharacter::GrabClip()
+{
+	if (EquippedWeapon == nullptr) return;
+	
+	//Index for the clip bone on the equipped weapon
+	int32 ClipBoneIndex{ EquippedWeapon->GetItemMesh()->GetBoneIndex(EquippedWeapon->GetClipBoneName()) };
+
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, true);
+
+	HandScenComponent->AttachToComponent(GetMesh(),AttachmentRules,FName(TEXT("Hand_L")));
+
+	HandScenComponent->SetWorldTransform(ClipTransform);
+
+	EquippedWeapon->SetMovingClip(true);
+
+}
+
+void AShooterCharacter::ReleaseClip()
+{
+	EquippedWeapon->SetMovingClip(false);
+}
+
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
 {
 	// Get Current size of viewport

@@ -64,6 +64,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
 	int32 MagazineCapacity;
 
+	// True when Clip Moving while Reloading
+	bool bMovingClip;
+
+	// Name of clip bone
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
+	FName ClipBoneName;
+
 public:
 
 	FORCEINLINE int32 GetAmmo() const { return Ammo; }
@@ -77,5 +84,8 @@ public:
 	FORCEINLINE int32 GetMagazineCapasity() const { return MagazineCapacity; }
 
 	void ReloadAmmo(int32 Ammount);
+
+	FORCEINLINE void SetMovingClip(bool Move) { bMovingClip = Move; }
+	FORCEINLINE FName GetClipBoneName() const { return ClipBoneName; }
 
 };
