@@ -312,7 +312,7 @@ private:
 
 	//ScenComponent to attach to the character hand during reload
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* HandScenComponent;
+	USceneComponent* HandSceneComponent;
 	
 public:
 	// Returns camera boom subobject

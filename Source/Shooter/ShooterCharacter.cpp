@@ -101,6 +101,8 @@ AShooterCharacter::AShooterCharacter() :
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
+
+	HandSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("HandSceneComp"));
 }
 
 // Called when the game starts or when spawned
@@ -454,15 +456,19 @@ bool AShooterCharacter::CarringAmmo()
 void AShooterCharacter::GrabClip()
 {
 	if (EquippedWeapon == nullptr) return;
+	if (HandSceneComponent == nullptr) return;
 	
 	//Index for the clip bone on the equipped weapon
 	int32 ClipBoneIndex{ EquippedWeapon->GetItemMesh()->GetBoneIndex(EquippedWeapon->GetClipBoneName()) };
 
+	// Store the transform of the clip
+	ClipTransform = EquippedWeapon->GetItemMesh()->GetBoneTransform(ClipBoneIndex);
+
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, true);
 
-	HandScenComponent->AttachToComponent(GetMesh(),AttachmentRules,FName(TEXT("Hand_L")));
+	HandSceneComponent->AttachToComponent(GetMesh(),AttachmentRules,FName(TEXT("Hand_L")));
 
-	HandScenComponent->SetWorldTransform(ClipTransform);
+	HandSceneComponent->SetWorldTransform(ClipTransform);
 
 	EquippedWeapon->SetMovingClip(true);
 
