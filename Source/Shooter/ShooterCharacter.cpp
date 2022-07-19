@@ -397,8 +397,8 @@ void AShooterCharacter::AutoFireReset()
 	}
 	else
 	{
-		// Reload Weapon
-		ReloadWeapon();
+		// Auto Reload Weapon
+		//ReloadWeapon();
 	}
 }
 
@@ -715,6 +715,7 @@ void AShooterCharacter::ReloadWeapon()
 	if (CombatState != ECombatState::ECS_Unoccupied) return;
 	if (EquippedWeapon == nullptr) return;
 	
+
 	// Do we have currnet ammo of type weapon?
 	if (CarringAmmo()) // Replace with carrying Ammo
 	{
