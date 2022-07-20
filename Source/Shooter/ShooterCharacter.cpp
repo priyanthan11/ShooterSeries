@@ -717,7 +717,7 @@ void AShooterCharacter::ReloadWeapon()
 	
 
 	// Do we have currnet ammo of type weapon?
-	if (CarringAmmo()) // Replace with carrying Ammo
+	if (CarringAmmo() && !EquippedWeapon->ClipIsFull()) // Replace with carrying Ammo
 	{
 		CombatState = ECombatState::ECS_Reload;
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
