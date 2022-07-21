@@ -88,7 +88,10 @@ AShooterCharacter::AShooterCharacter() :
 
 	//Groun Frection Stanidng/ Crouching
 	BaseGroundFriction(2.f),
-	CrouchedGroundFriction(100.f)
+	CrouchedGroundFriction(100.f),
+
+	//AimingBottonPressed
+	bAimingButtonPressed(false)
 
 
 
@@ -275,17 +278,17 @@ bool AShooterCharacter::GetBeamEndLocation(const FVector& MuzzleSocketLocation, 
 
 void AShooterCharacter::AimingButtonPressed()
 {
-	bAiming = true;
-	GetCharacterMovement()->MaxWalkSpeed = CrouchedMoveSpeed;
+	bAimingButtonPressed = true;
+	if (CombatState != ECombatState::ECS_Reload)
+	{
+		Aim();
+	}
 }
 
 void AShooterCharacter::AimingButtonReleased()
 {
-	bAiming = false;
-	if (!bCrouching)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
-	}
+	bAimingButtonPressed = false;
+	StopAim();
 }
 
 void AShooterCharacter::CameraInterpZoom(float DeltaTime)
@@ -429,6 +432,11 @@ void AShooterCharacter::FinishReloading()
 	// Update Combat State
 	CombatState = ECombatState::ECS_Unoccupied;
 
+	if (bAimingButtonPressed)
+	{
+		Aim();
+	}
+
 	if (EquippedWeapon == nullptr) return;
 	
 	const auto AmmoType{ EquippedWeapon->GetAmmoType() };
@@ -560,6 +568,21 @@ void AShooterCharacter::IntepCapsuleHalfHeight(float DeltaTime)
 	GetMesh()->AddLocalOffset(MeshOffset);
 
 	GetCapsuleComponent()->SetCapsuleHalfHeight(IntepHalfHeight);
+}
+
+void AShooterCharacter::Aim()
+{
+	bAiming = true;
+	GetCharacterMovement()->MaxWalkSpeed = CrouchedMoveSpeed;
+}
+
+void AShooterCharacter::StopAim()
+{
+	bAiming = false;
+	if (!bCrouching)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
+	}
 }
 
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
@@ -802,6 +825,10 @@ void AShooterCharacter::ReloadWeapon()
 	// Do we have currnet ammo of type weapon?
 	if (CarringAmmo() && !EquippedWeapon->ClipIsFull()) // Replace with carrying Ammo
 	{
+		if (bAiming)
+		{
+			StopAim();
+		}
 		CombatState = ECombatState::ECS_Reload;
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (ReloadMontage && AnimInstance)

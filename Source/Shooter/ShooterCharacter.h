@@ -149,6 +149,9 @@ protected:
 	// Interps capsule half height when crouched / standing
 	void IntepCapsuleHalfHeight(float DeltaTime);
 
+	void Aim();
+	void StopAim();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -352,6 +355,8 @@ private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float CrouchedGroundFriction;
 
+	//Used for know for animing botton pressed
+	bool bAimingButtonPressed;
 
 public:
 	// Returns camera boom subobject
