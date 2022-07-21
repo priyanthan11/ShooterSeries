@@ -32,8 +32,8 @@ AShooterCharacter::AShooterCharacter() :
 	// Mouse Look sensitivity scale factors
 	MouseHipTurnRate(1.0f),
 	MouseHipLookupRate(1.0f),
-	MouseAimingLookUpRate(0.2f),
-	MouseAimingTurnRate(0.2f),
+	MouseAimingLookUpRate(0.6f),
+	MouseAimingTurnRate(0.6f),
 	
 
 	// true when aiming weapon
@@ -41,7 +41,7 @@ AShooterCharacter::AShooterCharacter() :
 
 	// Camera Field ofView Values
 	CameraDefaultFOV(0.f), // Set in beginplay
-	CameraZoomedFOV(35.f),
+	CameraZoomedFOV(25.f),
 	CameraCurrentFOV(0.f),
 	ZoomInterpSpeed(20.f),
 
@@ -84,7 +84,7 @@ AShooterCharacter::AShooterCharacter() :
 
 	// Capsule Half Height sized
 	StandingCapsuleHalfHeight(88.f),
-	CrouchedCapsuleHalfHeight(45.f),
+	CrouchedCapsuleHalfHeight(44.f),
 
 	//Groun Frection Stanidng/ Crouching
 	BaseGroundFriction(2.f),
@@ -99,9 +99,9 @@ AShooterCharacter::AShooterCharacter() :
 	// Create camera boom(pulls in toweards the character if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 280.f; // Camera follow this distance behind the character
+	CameraBoom->TargetArmLength = 240.f; // Camera follow this distance behind the character
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on controller
-	CameraBoom->SocketOffset = FVector(0.f, 50.f, 45.f);
+	CameraBoom->SocketOffset = FVector(0.f, 40.f, 70.f);
 
 	// Create a FollowCamera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -544,11 +544,17 @@ void AShooterCharacter::IntepCapsuleHalfHeight(float DeltaTime)
 
 	const float IntepHalfHeight = FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), TargetCapsuleHalfHeight, DeltaTime, 20.f);
 
+	
+
 	// Evelation character mesh from inside the floor
 	// - Value if crouching + Value if standing
 	const float DeltaCapsuleHalfHeight = IntepHalfHeight - GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
-	const FVector MeshOffset = FVector(0.f, 0.f, DeltaCapsuleHalfHeight);
+	const FVector MeshOffset = FVector(0.f, 0.f, -DeltaCapsuleHalfHeight);
+	
+	GetMesh()->AddLocalOffset(MeshOffset);
+
+	GetCapsuleComponent()->SetCapsuleHalfHeight(IntepHalfHeight);
 }
 
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
@@ -818,6 +824,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 	/*Check Overlapped item count then trace for item*/
 	TraceForItems();
 	
+	IntepCapsuleHalfHeight(DeltaTime);
 	
 	
 }
