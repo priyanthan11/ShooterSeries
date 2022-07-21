@@ -152,6 +152,8 @@ protected:
 	void Aim();
 	void StopAim();
 
+	// Check to see AmmoMap Contains Ammo's ammo type
+	void PickupAmmo(class AAmmo* Ammo);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
