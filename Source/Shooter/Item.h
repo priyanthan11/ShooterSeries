@@ -62,7 +62,7 @@ protected:
 	void SetActiveStars();
 
 	/*Set item property component based on the state*/
-	void SetItemProperties(EItemState State);
+	virtual void SetItemProperties(EItemState State);
 
 
 	// Called when iteminterp timer finished
