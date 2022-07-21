@@ -101,6 +101,19 @@ private:
 	FRotator CharacterRotationLastFrame;
 
 	//YawDelta Used for running to lean in blenspace
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = " Lean", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
 	float YawDelta;
+
+	// True When Crouching
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
+		bool bCrouching;
+
+	// Change the recoil weight when turn in place
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
+		float RecoilWeigt;
+
+	//True When turn in Place
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
+		bool bTurnInPlace;
+
 };

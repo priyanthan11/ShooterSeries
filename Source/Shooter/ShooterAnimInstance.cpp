@@ -21,7 +21,13 @@ UShooterAnimInstance::UShooterAnimInstance() :
 	RootYawOffset(0.f),
 	Pitch(0.f),
 	bReloading(false),
-	OffsetState(EOffsetState::EOS_Hip)
+	OffsetState(EOffsetState::EOS_Hip),
+	//Crouching
+	bCrouching(false),
+
+	//TurnInplace
+	RecoilWeigt(0.f),
+	bTurnInPlace(false)
 	
 {
 }
@@ -34,6 +40,7 @@ void UShooterAnimInstance::UpdateAnimationProperties(float DeltaTime)
 	}
 	if (ShooterCharacter)
 	{
+		bCrouching = ShooterCharacter->GetCrouching();
 		bReloading = ShooterCharacter->GetCombatState() == ECombatState::ECS_Reload;
 
 		// Ge the lateral Speed of the character
@@ -104,8 +111,9 @@ void UShooterAnimInstance::TurnInPlace()
 
 	Pitch = ShooterCharacter->GetBaseAimRotation().Pitch;
 
-	if (Speed > 0 ||bIsInAir)
+	if (Speed > 0)
 	{
+		
 		// Dont want to turn in place while moving
 		RootYawOffset = 0.f;
 		TIPCharacterYaw = ShooterCharacter->GetActorRotation().Yaw;
@@ -115,6 +123,7 @@ void UShooterAnimInstance::TurnInPlace()
 	}
 	else
 	{
+		
 		TIPCharacterYawLastFrame = TIPCharacterYaw;
 		TIPCharacterYaw = ShooterCharacter->GetActorRotation().Yaw;
 
@@ -128,6 +137,7 @@ void UShooterAnimInstance::TurnInPlace()
 		// 1.f Turning 0.f Not Turning
 		if (Turning >0)
 		{
+			bTurnInPlace = true;
 			RotationCurveValueLastFrame = RotationCurve;
 			RotationCurve = GetCurveValue(TEXT("Rotation"));
 
@@ -145,9 +155,50 @@ void UShooterAnimInstance::TurnInPlace()
 				RootYawOffset > 0 ? RootYawOffset -= YawExcess : RootYawOffset += YawExcess;
 			}
 		}
-
+		else
+		{
+			bTurnInPlace = false;
+		}
 		
+		
+	}
+	//SetRecoil Weight
 
+	if (bTurnInPlace)
+	{
+		if (bReloading)
+		{
+			RecoilWeigt = 1.f;
+		}
+		else
+		{
+			RecoilWeigt = 0.f;
+		}
+	}
+	else // not turning
+	{
+		if (bCrouching)
+		{
+			if (bReloading)
+			{
+				RecoilWeigt = 1.f;
+			}
+			else
+			{
+				RecoilWeigt = 0.1f;
+			}
+		}
+		else
+		{
+			if (bAiming || bReloading)
+			{
+				RecoilWeigt = 1.f;
+			}
+			else
+			{
+				RecoilWeigt = 0.5f;
+			}
+		}
 	}
 }
 
