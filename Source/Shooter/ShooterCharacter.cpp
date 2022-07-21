@@ -15,6 +15,7 @@
 #include "Weapon.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -79,7 +80,16 @@ AShooterCharacter::AShooterCharacter() :
 
 	//MovementSpeed
 	BaseMovementSpeed(600.f),
-	CrouchedMoveSpeed(300.f)
+	CrouchedMoveSpeed(300.f),
+
+	// Capsule Half Height sized
+	StandingCapsuleHalfHeight(88.f),
+	CrouchedCapsuleHalfHeight(45.f),
+
+	//Groun Frection Stanidng/ Crouching
+	BaseGroundFriction(2.f),
+	CrouchedGroundFriction(100.f)
+
 
 
 {
@@ -91,7 +101,7 @@ AShooterCharacter::AShooterCharacter() :
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 280.f; // Camera follow this distance behind the character
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on controller
-	CameraBoom->SocketOffset = FVector(0.f, 50.f, 70.f);
+	CameraBoom->SocketOffset = FVector(0.f, 50.f, 45.f);
 
 	// Create a FollowCamera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -495,12 +505,17 @@ void AShooterCharacter::CrouchButtonPressed()
 	if (bCrouching)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CrouchedMoveSpeed;
+		GetCharacterMovement()->GroundFriction = CrouchedGroundFriction;
 	}
 	else
 	{
 		GetCharacterMovement()->MaxWalkSpeed = BaseMovementSpeed;
+		GetCharacterMovement()->GroundFriction = BaseGroundFriction;
 	}
+
 }
+
+
 
 void AShooterCharacter::Jump()
 {
@@ -513,6 +528,27 @@ void AShooterCharacter::Jump()
 	{
 		ACharacter::Jump();
 	}
+}
+
+void AShooterCharacter::IntepCapsuleHalfHeight(float DeltaTime)
+{
+	float TargetCapsuleHalfHeight;
+	if (bCrouching)
+	{
+		TargetCapsuleHalfHeight = CrouchedCapsuleHalfHeight;
+	}
+	else
+	{
+		TargetCapsuleHalfHeight = StandingCapsuleHalfHeight;
+	}
+
+	const float IntepHalfHeight = FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), TargetCapsuleHalfHeight, DeltaTime, 20.f);
+
+	// Evelation character mesh from inside the floor
+	// - Value if crouching + Value if standing
+	const float DeltaCapsuleHalfHeight = IntepHalfHeight - GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+	const FVector MeshOffset = FVector(0.f, 0.f, DeltaCapsuleHalfHeight);
 }
 
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
