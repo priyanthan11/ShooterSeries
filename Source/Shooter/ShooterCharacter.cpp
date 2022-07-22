@@ -402,11 +402,17 @@ void AShooterCharacter::FireButtonReleased()
 
 void AShooterCharacter::StartFireTimer()
 {
-	CombatState = ECombatState::ECS_FireTimerInPrograss;
+	if (EquippedWeapon)
+	{
+		CombatState = ECombatState::ECS_FireTimerInPrograss;
 
-	GetWorldTimerManager().SetTimer
-	(AutoFireTimer, this,
-	&AShooterCharacter::AutoFireReset, AutomaticFireRate);
+		GetWorldTimerManager().SetTimer
+		(AutoFireTimer, this,
+			&AShooterCharacter::AutoFireReset, EquippedWeapon->GetRateOfFire());
+
+
+		//AutomaticFireRate
+	}
 	
 }
 
@@ -733,10 +739,7 @@ void AShooterCharacter::SelectButtonPressed()
 	if (TraceHitItem)
 	{
 		TraceHitItem->StartItemCurve(this);
-		if (TraceHitItem->GetPickupSound())
-		{
-			UGameplayStatics::PlaySound2D(this, TraceHitItem->GetPickupSound());
-		}
+		
 	}
 	
 }

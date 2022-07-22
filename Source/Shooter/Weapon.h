@@ -72,6 +72,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
 	FName ClipBoneName;
 
+	//Rate Of Fire
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
+		float RateOfFire;
+
 public:
 
 	FORCEINLINE int32 GetAmmo() const { return Ammo; }
@@ -88,6 +92,7 @@ public:
 
 	FORCEINLINE void SetMovingClip(bool Move) { bMovingClip = Move; }
 	FORCEINLINE FName GetClipBoneName() const { return ClipBoneName; }
+	FORCEINLINE float GetRateOfFire() const { return RateOfFire; }
 
 	bool ClipIsFull();
 

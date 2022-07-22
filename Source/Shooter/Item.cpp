@@ -7,10 +7,13 @@
 #include "Components/SphereComponent.h"
 #include "ShooterCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 
 // Sets default values
 AItem::AItem():
+
 ItemName(FString("Default")),
 ItemCount(0),
 ItemRarity(EItemRarity::EIR_Common),
@@ -227,6 +230,12 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 {
 	// Store a handle to the character
 	Character = Char;
+
+	if (PickupSound)
+	{
+		UGameplayStatics::PlaySound2D(this, PickupSound);
+
+	}
 	// Store initial location of Item
 	ItemInterpStartLocation = GetActorLocation();
 	bInterping = true;

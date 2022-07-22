@@ -21,7 +21,10 @@ AWeapon::AWeapon():
 	MagazineCapacity(30),
 
 	// ClipBoneDefault
-	ClipBoneName(TEXT("smg_clip"))
+	ClipBoneName(TEXT("smg_clip")),
+
+	//Rate Of Fire
+	RateOfFire(0.1f)
 
 {
 	PrimaryActorTick.bCanEverTick = true;
