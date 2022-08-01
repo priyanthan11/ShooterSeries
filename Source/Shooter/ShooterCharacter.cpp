@@ -168,6 +168,9 @@ void AShooterCharacter::BeginPlay()
 	
 
 	InitializeAmmoMap();
+
+	// Create FinterpLocation structs for each interp location. add to arry
+	InitializedInterpLocation();
 	//---------------------------------------------------------------------//
 }
 
@@ -639,6 +642,31 @@ void AShooterCharacter::PickupAmmo(AAmmo* Ammo)
 	Ammo->Destroy();
 }
 
+void AShooterCharacter::InitializedInterpLocation()
+{
+	FIntepLocation WeaponLocation{ WeaponInterpComp,0 };
+	InterpLocations.Add(WeaponLocation);
+
+	FIntepLocation InterpLoc1{ InterpCom1,0 };
+	InterpLocations.Add(InterpLoc1);
+
+	FIntepLocation InterpLoc2{ InterpCom2,0 };
+	InterpLocations.Add(InterpLoc2);
+
+	FIntepLocation InterpLoc3{ InterpCom3,0 };
+	InterpLocations.Add(InterpLoc3);
+
+	FIntepLocation InterpLoc4{ InterpCom4,0 };
+	InterpLocations.Add(InterpLoc4);
+
+	FIntepLocation InterpLoc5{ InterpCom5,0 };
+	InterpLocations.Add(InterpLoc5);
+
+	FIntepLocation InterpLoc6{ InterpCom6,0 };
+	InterpLocations.Add(InterpLoc6);
+
+}
+
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
 {
 	// Get Current size of viewport
@@ -991,5 +1019,15 @@ void AShooterCharacter::GetPickupItem(AItem* Item)
 	{
 		PickupAmmo(Ammo);
 	}
+}
+
+FIntepLocation AShooterCharacter::GetInterpLocation(int32 Index)
+{
+	if (Index <= InterpLocations.Num())
+	{
+		return InterpLocations[Index];
+	}
+
+	return FIntepLocation();
 }
 

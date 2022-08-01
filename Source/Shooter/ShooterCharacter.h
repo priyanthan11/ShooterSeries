@@ -17,6 +17,21 @@ enum class ECombatState : uint8
 	ECS_MAX					UMETA(DisplayName = "DefaultMax")
 };
 
+USTRUCT(BlueprintType)
+struct FIntepLocation
+{
+	GENERATED_BODY()
+
+	// Scene component use for its location for interp
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USceneComponent* SceneComponent;
+	
+	// Number of items interping to/at this scene component location
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32 ItemCount;
+
+};
+
 UCLASS()
 class SHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -154,6 +169,9 @@ protected:
 
 	// Check to see AmmoMap Contains Ammo's ammo type
 	void PickupAmmo(class AAmmo* Ammo);
+
+	void InitializedInterpLocation();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -382,6 +400,10 @@ private:
 	USceneComponent* InterpCom6;
 
 
+	//Array of interpLocaion struct
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TArray<FIntepLocation>InterpLocations;
+
 public:
 	// Returns camera boom subobject
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -403,4 +425,6 @@ public:
 
 	FORCEINLINE ECombatState GetCombatState() const { return CombatState; }
 	FORCEINLINE bool GetCrouching() const { return bCrouching; }
+
+	FIntepLocation GetInterpLocation(int32 Index);
 };
