@@ -1,4 +1,4 @@
-  // Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ShooterCharacter.h"
@@ -122,8 +122,33 @@ AShooterCharacter::AShooterCharacter() :
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
-
+	
+	// Create Hand Scean Component
 	HandSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("HandSceneComp"));
+
+	// Create Interoplation Component
+	WeaponInterpComp = CreateDefaultSubobject<USceneComponent>(TEXT("Weapon Interp Component"));
+	WeaponInterpComp->SetupAttachment(GetFollowCamera());
+
+	InterpCom1 = CreateDefaultSubobject<USceneComponent>(TEXT("Interp Component1"));
+	InterpCom1->SetupAttachment(GetFollowCamera());
+
+	InterpCom2 = CreateDefaultSubobject<USceneComponent>(TEXT("Interp Component2"));
+	InterpCom2->SetupAttachment(GetFollowCamera());
+
+	InterpCom3 = CreateDefaultSubobject<USceneComponent>(TEXT("Interp Component3"));
+	InterpCom3->SetupAttachment(GetFollowCamera());
+
+	InterpCom4 = CreateDefaultSubobject<USceneComponent>(TEXT(" Interp Component4"));
+	InterpCom4->SetupAttachment(GetFollowCamera());
+
+	InterpCom5 = CreateDefaultSubobject<USceneComponent>(TEXT("Interp Component5"));
+	InterpCom5->SetupAttachment(GetFollowCamera());
+
+	InterpCom6 = CreateDefaultSubobject<USceneComponent>(TEXT("Interp Component6"));
+	InterpCom6->SetupAttachment(GetFollowCamera());
+
+
 }
 
 // Called when the game starts or when spawned
