@@ -82,10 +82,14 @@ protected:
 	// Get interplocation based on interpType
 	FVector GetInterpLocation();
 
+	void PlayPickupSound();
+	
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void PlayEquipSound();
 private:
 
 /* Skeletel mesh for Iteams*/

@@ -92,7 +92,14 @@ AShooterCharacter::AShooterCharacter() :
 	CrouchedGroundFriction(100.f),
 
 	//AimingBottonPressed
-	bAimingButtonPressed(false)
+	bAimingButtonPressed(false),
+
+	// Pickup sound properties
+	bShouldPlayPickupSound(true),
+	bShouldPlayEquipedSound(true),
+
+	PickupSoundResetTime(.2f),
+	EquipSoundResetTime(0.2f)
 
 
 
@@ -974,6 +981,16 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 }
 
+void AShooterCharacter::RestPickupSoundTimer()
+{
+	bShouldPlayPickupSound = true;
+}
+
+void AShooterCharacter::RestEquipSoundTimer()
+{
+	bShouldPlayEquipedSound = true;
+}
+
 float AShooterCharacter::GetCrosshairSpreadMultiplier() const
 {
 	return CrosshairSpreadMultiplier;
@@ -1004,10 +1021,7 @@ FVector AShooterCharacter::GetCameraInterpLocation()
 */
 void AShooterCharacter::GetPickupItem(AItem* Item)
 {
-	if (Item->GetEquipSound())
-	{
-		UGameplayStatics::PlaySound2D(this, Item->GetEquipSound());
-	}
+	Item->PlayEquipSound();
 
 	auto Weapon = Cast<AWeapon>(Item);
 	if (Weapon)
@@ -1059,5 +1073,17 @@ void AShooterCharacter::IncrimentInterpLocItemCount(int32 Index, int32 Amount)
 		InterpLocations[Index].ItemCount += Amount;
 	}
 	
+}
+
+void AShooterCharacter::StartPickupSoundTimer()
+{
+	bShouldPlayPickupSound = false;
+	GetWorldTimerManager().SetTimer(PickupSoundTimer, this, &AShooterCharacter::RestPickupSoundTimer, PickupSoundResetTime);
+}
+
+void AShooterCharacter::StartEquipSoundTimer()
+{
+	bShouldPlayEquipedSound = false;
+	GetWorldTimerManager().SetTimer(EquipSoundTimer, this, &AShooterCharacter::RestEquipSoundTimer, EquipSoundResetTime);
 }
 
