@@ -32,7 +32,10 @@ ItemInterpY(0.f),
 InterpInitialYawOffset(0.f),
 
 //ItemType
-ItemType(EItemType::EIT_Max)
+ItemType(EItemType::EIT_Max),
+
+// Item index
+InterpLocIndex(0)
 
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -234,6 +237,11 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 	// Store a handle to the character
 	Character = Char;
 
+	// Get array index in inerp locations with the lowest item count
+	InterpLocIndex = Character->GetInterpLocationIndex();
+	// Add 1 to the item count for this interp location strut
+	Character->IncrimentInterpLocItemCount(InterpLocIndex, 1);
+
 	if (PickupSound)
 	{
 		UGameplayStatics::PlaySound2D(this, PickupSound);
@@ -260,7 +268,13 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 void AItem::FinishInterping()
 {
 	bInterping = false;
-	Character->GetPickupItem(this);
+	if (Character)
+	{
+		//Substract 1 from the item count of the interp location
+		Character->IncrimentInterpLocItemCount(InterpLocIndex, -1);
+		Character->GetPickupItem(this);
+	}
+	
 
 	// Set Actor to Scale 1 when its shrink intropolation
 	SetActorScale3D(FVector(1.f));
@@ -279,7 +293,7 @@ void AItem::ItemInterp(float DeltaTime)
 		//Get the item's initial location when the curve started
 		FVector ItemLocation = ItemInterpStartLocation;
 		//Get Location infront of camera
-		const FVector CameraInterpLocation{ Character->GetCameraInterpLocation() };
+		const FVector CameraInterpLocation{GetInterpLocation()};
 		// Delta Vector Item to camera interploation, XandY zero out
 		const FVector ItemToCamera{ FVector(0.f,0.f,(CameraInterpLocation - ItemLocation).Z) };
 		//Scale factor to multiply with curve value
@@ -313,5 +327,22 @@ void AItem::ItemInterp(float DeltaTime)
 			SetActorScale3D(FVector(ScaleCurveCalue, ScaleCurveCalue, ScaleCurveCalue));
 		}
 	}
+}
+
+FVector AItem::GetInterpLocation()
+{
+	if (Character == nullptr) return FVector(0.f);
+	
+	switch (ItemType)
+	{
+	case EItemType::EIT_Ammo:
+		return Character->GetInterpLocation(InterpLocIndex).SceneComponent->GetComponentLocation();
+		break;
+	case EItemType::EIT_Weapon:
+		return Character->GetInterpLocation(0).SceneComponent->GetComponentLocation();
+		break;
+	
+	}
+	return FVector();
 }
 

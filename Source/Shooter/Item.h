@@ -79,6 +79,9 @@ protected:
 
 	void ItemInterp(float DeltaTime);
 
+	// Get interplocation based on interpType
+	FVector GetInterpLocation();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -164,6 +167,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	EItemType ItemType;
 
+	// Index of the interp location this item is interping to
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	int32 InterpLocIndex;
 
 public:
 

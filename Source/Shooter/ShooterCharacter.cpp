@@ -992,7 +992,7 @@ void AShooterCharacter::IncrementOverlappedItemCount(int8 Amount)
 		bShouldTraceForItems = true; 
 	}
 }
-
+/*
 FVector AShooterCharacter::GetCameraInterpLocation()
 {
 	const FVector CameraWorldLocation{ FollowCamera->GetComponentLocation() };
@@ -1001,7 +1001,7 @@ FVector AShooterCharacter::GetCameraInterpLocation()
 	//Desired Location = CameraWorldLocation + CameraForward*A +Up * B
 	return CameraWorldLocation + CameraForward * CameraInterpDistance + FVector(0.f, 0.f, CameraInterpElevation);
 }
-
+*/
 void AShooterCharacter::GetPickupItem(AItem* Item)
 {
 	if (Item->GetEquipSound())
@@ -1029,5 +1029,35 @@ FIntepLocation AShooterCharacter::GetInterpLocation(int32 Index)
 	}
 
 	return FIntepLocation();
+}
+
+int32 AShooterCharacter::GetInterpLocationIndex()
+{
+
+	int32 lowestIndex = 1;
+	int32 lowesCount = INT_MAX;
+
+	for (int32 i = 1; i < InterpLocations.Num(); i++)
+	{
+		if (InterpLocations[i].ItemCount < lowesCount)
+		{
+			lowestIndex = i;
+			lowesCount = InterpLocations[i].ItemCount;
+		}
+	}
+
+
+	return lowestIndex;
+}
+
+void AShooterCharacter::IncrimentInterpLocItemCount(int32 Index, int32 Amount)
+{
+	if (Amount < -1 || Amount > 1) return;
+	
+	if (InterpLocations.Num() >= Index)
+	{
+		InterpLocations[Index].ItemCount += Amount;
+	}
+	
 }
 

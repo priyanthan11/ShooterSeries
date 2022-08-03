@@ -419,7 +419,7 @@ public:
 	/** Adds / Subtracts to/from overlappeditem and updates bShouldTrace For Items **/
 	void IncrementOverlappedItemCount(int8 Amount);
 
-	FVector GetCameraInterpLocation();
+	//FVector GetCameraInterpLocation();
 
 	void GetPickupItem(AItem* Item);
 
@@ -427,4 +427,9 @@ public:
 	FORCEINLINE bool GetCrouching() const { return bCrouching; }
 
 	FIntepLocation GetInterpLocation(int32 Index);
+	
+	// Return the index in the interp locations array with the lowers item count
+	int32 GetInterpLocationIndex();
+
+	void IncrimentInterpLocItemCount(int32 Index, int32 Amount);
 };
