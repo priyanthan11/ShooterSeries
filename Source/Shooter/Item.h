@@ -191,6 +191,8 @@ private:
 	/* Material Instance that use with dynamic material Instance*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	UMaterialInstance* MaterialInstance;
+
+	bool bCanChangeCustumDepth;
 public:
 
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }

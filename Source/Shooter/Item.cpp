@@ -36,7 +36,8 @@ ItemType(EItemType::EIT_Max),
 
 // Item index
 InterpLocIndex(0),
-MaterialIndex(0)
+MaterialIndex(0),
+bCanChangeCustumDepth(true)
 
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -263,6 +264,8 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 
 	// Initial offset between camera & Item
 	InterpInitialYawOffset = ItemRotationYaw - CameraRotationYaw;
+
+	bCanChangeCustumDepth = false;
 }
 
 void AItem::FinishInterping()
@@ -280,6 +283,7 @@ void AItem::FinishInterping()
 	SetActorScale3D(FVector(1.f));
 
 	DisableGlowMaterial();
+	bCanChangeCustumDepth = true;
 	DisableCustomDepth();
 }
 
@@ -366,12 +370,20 @@ void AItem::PlayPickupSound()
 
 void AItem::EnableCustomDepth()
 {
-	ItemMesh->SetRenderCustomDepth(true);
+	if (bCanChangeCustumDepth)
+	{
+		ItemMesh->SetRenderCustomDepth(true);
+	}
+	
 }
 
 void AItem::DisableCustomDepth()
 {
-	ItemMesh->SetRenderCustomDepth(false);
+	if (bCanChangeCustumDepth)
+	{
+		ItemMesh->SetRenderCustomDepth(false);
+	}
+	
 }
 
 void AItem::InitializeCustomDepth()
