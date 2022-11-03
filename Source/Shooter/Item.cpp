@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Curves/CurveVector.h"
 
 
 // Sets default values
@@ -37,7 +38,13 @@ ItemType(EItemType::EIT_Max),
 // Item index
 InterpLocIndex(0),
 MaterialIndex(0),
-bCanChangeCustumDepth(true)
+bCanChangeCustumDepth(true),
+
+//Dynamic material parameter
+GlowAmount(150.f),
+FresnalExponent(3.f),
+FresnalReflectFraction(4.f),
+pulseCurvetime(5.f)
 
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -80,6 +87,7 @@ void AItem::BeginPlay()
 
 	//Set custom depth to disable
 	InitializeCustomDepth();
+	StartPulseTimer();
 }
 
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -229,6 +237,9 @@ void AItem::Tick(float DeltaTime)
 
 	// Handle item interping when inthe EquipInterping State
 	ItemInterp(DeltaTime);
+	// Get curveValue from pulse curve and set dynamic material parameter
+	UpdatePulse();
+
 }
 
 void AItem::SetItemState(EItemState State)
@@ -414,6 +425,36 @@ void AItem::DisableGlowMaterial()
 	if (DynamicMaterialInstance)
 	{
 		DynamicMaterialInstance->SetScalarParameterValue(TEXT("Glow Blend Alpha"), 1);
+	}
+}
+
+void AItem::StartPulseTimer()
+{
+	if (ItemState==EItemState::EIS_Pickup)
+	{
+		GetWorldTimerManager().SetTimer(PulseTimer, this, &AItem::ResetPulsTimer, pulseCurvetime);
+	}
+}
+
+void AItem::ResetPulsTimer()
+{
+	StartPulseTimer();
+}
+
+void AItem::UpdatePulse()
+{
+	if (ItemState != EItemState::EIS_Pickup) return;
+	
+	const float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(PulseTimer);
+	if (pulseCurve)
+	{
+		const FVector CurveValue{ pulseCurve->GetVectorValue(ElapsedTime) };
+
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowAmount"), CurveValue.X * GlowAmount);
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("FresnalExponent"), CurveValue.Y * FresnalExponent);
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("FresnalReflectFactor"), CurveValue.Z * FresnalReflectFraction);
+
+
 	}
 }
 
