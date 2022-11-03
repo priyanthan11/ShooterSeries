@@ -278,6 +278,9 @@ void AItem::FinishInterping()
 
 	// Set Actor to Scale 1 when its shrink intropolation
 	SetActorScale3D(FVector(1.f));
+
+	DisableGlowMaterial();
+	DisableCustomDepth();
 }
 
 void AItem::ItemInterp(float DeltaTime)
@@ -382,6 +385,23 @@ void AItem::OnConstruction(const FTransform& Transform)
 	{
 		DynamicMaterialInstance = UMaterialInstanceDynamic::Create(MaterialInstance, this);
 		ItemMesh->SetMaterial(MaterialIndex, DynamicMaterialInstance);
+	}
+	EnableGlowMateial();
+}
+
+void AItem::EnableGlowMateial()
+{
+	if (DynamicMaterialInstance)
+	{
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("Glow Blend Alpha"), 0);
+	}
+}
+
+void AItem::DisableGlowMaterial()
+{
+	if (DynamicMaterialInstance)
+	{
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("Glow Blend Alpha"), 1);
 	}
 }
 
