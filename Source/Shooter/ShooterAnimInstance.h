@@ -67,7 +67,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	bool bAiming;
 
-	//yaw of the character this fram;
+	//yaw of the character this frame;
 	float TIPCharacterYaw;
 
 	// Yaw at the characeter previous frame
