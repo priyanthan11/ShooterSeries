@@ -75,6 +75,9 @@ void AItem::BeginPlay()
 	AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
 	//Set ItemProperties Based on item state
 	SetItemProperties(ItemState);
+
+	//Set custom depth to disable
+	InitializeCustomDepth();
 }
 
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -355,6 +358,21 @@ void AItem::PlayPickupSound()
 			}
 		}
 	}
+}
+
+void AItem::EnableCustomDepth()
+{
+	ItemMesh->SetRenderCustomDepth(true);
+}
+
+void AItem::DisableCustomDepth()
+{
+	ItemMesh->SetRenderCustomDepth(false);
+}
+
+void AItem::InitializeCustomDepth()
+{
+	DisableCustomDepth();
 }
 
 void AItem::PlayEquipSound()
