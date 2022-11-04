@@ -201,7 +201,9 @@ private:
 	//Curve to derive the dynamicmaterial parameter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	class UCurveVector* pulseCurve;
-
+	//Curve to derive the dynamicmaterial parameter
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	UCurveVector* InsterpPulseCurve;
 	FTimerHandle PulseTimer;
 	//Time for pulse timer
 	float pulseCurvetime;

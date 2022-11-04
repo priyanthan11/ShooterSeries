@@ -264,6 +264,7 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 	bInterping = true;
 
 	SetItemState(EItemState::EIS_EquipInterp);
+	GetWorldTimerManager().ClearTimer(PulseTimer);
 
 	GetWorldTimerManager().SetTimer(ItemInterpTimer, this, &AItem::FinishInterping, ZCurveTime);
 
@@ -287,6 +288,7 @@ void AItem::FinishInterping()
 		//Substract 1 from the item count of the interp location
 		Character->IncrimentInterpLocItemCount(InterpLocIndex, -1);
 		Character->GetPickupItem(this);
+		SetItemState(EItemState::EIS_PickedUp);
 	}
 	
 
@@ -445,17 +447,35 @@ void AItem::UpdatePulse()
 {
 	if (ItemState != EItemState::EIS_Pickup) return;
 	
-	const float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(PulseTimer);
-	if (pulseCurve)
-	{
-		const FVector CurveValue{ pulseCurve->GetVectorValue(ElapsedTime) };
+	float ElapsedTime{};
+	FVector CurveValue{};
 
+	switch (ItemState)
+	{
+	case EItemState::EIS_Pickup:
+		if (pulseCurve)
+		{
+			ElapsedTime = GetWorldTimerManager().GetTimerElapsed(PulseTimer);
+			CurveValue = pulseCurve->GetVectorValue(ElapsedTime);
+		}
+		break;
+	case EItemState::EIS_EquipInterp:
+		if (InsterpPulseCurve)
+		{
+			ElapsedTime = GetWorldTimerManager().GetTimerElapsed(ItemInterpTimer);
+			CurveValue = InsterpPulseCurve->GetVectorValue(ElapsedTime);
+		}
+		break;
+	}
+	if (DynamicMaterialInstance)
+	{
 		DynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowAmount"), CurveValue.X * GlowAmount);
 		DynamicMaterialInstance->SetScalarParameterValue(TEXT("FresnalExponent"), CurveValue.Y * FresnalExponent);
 		DynamicMaterialInstance->SetScalarParameterValue(TEXT("FresnalReflectFactor"), CurveValue.Z * FresnalReflectFraction);
 
-
 	}
+
+	
 }
 
 void AItem::PlayEquipSound()
