@@ -262,7 +262,6 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 	// Store initial location of Item
 	ItemInterpStartLocation = GetActorLocation();
 	bInterping = true;
-
 	SetItemState(EItemState::EIS_EquipInterp);
 	GetWorldTimerManager().ClearTimer(PulseTimer);
 
@@ -445,7 +444,7 @@ void AItem::ResetPulsTimer()
 
 void AItem::UpdatePulse()
 {
-	if (ItemState != EItemState::EIS_Pickup) return;
+	//if (ItemState != EItemState::EIS_Pickup) return;
 	
 	float ElapsedTime{};
 	FVector CurveValue{};
