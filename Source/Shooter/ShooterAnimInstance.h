@@ -108,6 +108,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
 		bool bCrouching;
 
+	// True When Equipping
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
+	bool bEqupping;
+
 	// Change the recoil weight when turn in place
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
 		float RecoilWeigt;

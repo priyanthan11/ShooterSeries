@@ -514,6 +514,11 @@ void AShooterCharacter::FinishReloading()
 
 }
 
+void AShooterCharacter::FinishEqupping()
+{
+	CombatState = ECombatState::ECS_Unoccupied;
+}
+
 bool AShooterCharacter::CarringAmmo()
 {
 	if (EquippedWeapon == nullptr) return false;
@@ -715,7 +720,7 @@ void AShooterCharacter::FifthKeyPressed()
 
 void AShooterCharacter::ExchangeInventoryItem(int32 CurrentItemIndex, int32 NewItemIndex)
 {
-	if ((CurrentItemIndex == NewItemIndex) && (NewItemIndex >= Inventory.Num())) return;
+	if ((CurrentItemIndex == NewItemIndex) || (NewItemIndex >= Inventory.Num())|| (CombatState != ECombatState::ECS_Unoccupied)) return;
 	
 	auto OldEquppedWeapon = EquippedWeapon;
 	auto NewWeapon = Cast<AWeapon>(Inventory[NewItemIndex]);
@@ -723,6 +728,14 @@ void AShooterCharacter::ExchangeInventoryItem(int32 CurrentItemIndex, int32 NewI
 	
 	OldEquppedWeapon->SetItemState(EItemState::EIS_PickedUp);
 	NewWeapon -> SetItemState(EItemState::EIS_Equipped);
+
+	CombatState = ECombatState::ECS_Equipping;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && EquppingMontage)
+	{
+		AnimInstance->Montage_Play(EquppingMontage, 1.0f);
+		AnimInstance->Montage_JumpToSection(FName("Equip"));
+	}
 }
 
 bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation)
@@ -868,6 +881,7 @@ void AShooterCharacter::SelectButtonPressed()
 {
 	if (TraceHitItem)
 	{
+		if (CombatState != ECombatState::ECS_Unoccupied) return;
 		TraceHitItem->StartItemCurve(this);
 		TraceHitItem = nullptr;
 	}
@@ -1056,7 +1070,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	// Weapon Select
 	PlayerInputComponent->BindAction("FKey", IE_Pressed, this, &AShooterCharacter::FKeyPressed);
-	PlayerInputComponent->BindAction("1tKey", IE_Pressed, this, &AShooterCharacter::FirstKeyPressed);
+	PlayerInputComponent->BindAction("1Key", IE_Pressed, this, &AShooterCharacter::FirstKeyPressed);
 	PlayerInputComponent->BindAction("2Key", IE_Pressed, this, &AShooterCharacter::SecondKeyPressed);
 	PlayerInputComponent->BindAction("3Key", IE_Pressed, this, &AShooterCharacter::ThirdKeyPressed);
 	PlayerInputComponent->BindAction("4Key", IE_Pressed, this, &AShooterCharacter::ForthKeyPressed);
