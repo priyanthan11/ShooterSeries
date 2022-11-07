@@ -213,6 +213,19 @@ private:
 	float FresnalExponent;
 	UPROPERTY(VisibleAnywhere, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	float FresnalReflectFraction;
+
+	//backgroud for this item in inventory
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
+	UTexture2D* IconBackground;
+	//Icon for this item in inventory
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
+	UTexture2D* IconItem;
+	//Icon for this Ammo in inventory
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
+	UTexture2D* AmmoItem;
+	// Slot in the inventory
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
+	int32 SlotIndex;
 	
 public:
 
@@ -226,6 +239,8 @@ public:
 	FORCEINLINE USoundCue* GetPickupSound() const { return PickupSound; }
 	FORCEINLINE USoundCue* GetEquipSound() const { return EquipSound; }
 	FORCEINLINE int32 GetItemCount() const { return ItemCount; }
+	FORCEINLINE int32 GetSlotIndex() const { return SlotIndex; }
+	FORCEINLINE void SetSlotIndex(int32 Index) { SlotIndex = Index; }
 
 	// Call from the shooter Character class
 	void StartItemCurve(AShooterCharacter* Char);

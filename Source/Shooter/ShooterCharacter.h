@@ -32,6 +32,8 @@ struct FIntepLocation
 
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEquipItemDelegate, int32, CurrentSlotIndex, int32, NewSlotIndex);
+
 UCLASS()
 class SHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -171,6 +173,16 @@ protected:
 	void PickupAmmo(class AAmmo* Ammo);
 
 	void InitializedInterpLocation();
+
+
+	void FKeyPressed();
+	void FirstKeyPressed();
+	void SecondKeyPressed();
+	void ThirdKeyPressed();
+	void ForthKeyPressed();
+	void FifthKeyPressed();
+
+	void ExchangeInventoryItem(int32 CurrentItemIndex, int32 NewItemIndex);
 
 public:	
 	// Called every frame
@@ -417,6 +429,16 @@ private:
 	float PickupSoundResetTime;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	float EquipSoundResetTime;
+
+	//Array of item for inventory
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	TArray<AItem*> Inventory;
+	// Maximum inventory holding capacity
+	const int32 INVENTORY_CAPACITY{ 6 };
+	// Dlegate for sending slot information to invetartybar when equipping item
+	UPROPERTY(BlueprintAssignable, Category = "Delegate", meta = (AllowPrivateAccess = "true"))
+	FEquipItemDelegate EquipItemDelegate;
+
 
 public:
 	// Returns camera boom subobject

@@ -44,7 +44,10 @@ bCanChangeCustumDepth(true),
 GlowAmount(150.f),
 FresnalExponent(3.f),
 FresnalReflectFraction(4.f),
-pulseCurvetime(5.f)
+pulseCurvetime(5.f),
+
+// Item slot
+SlotIndex(0)
 
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -191,8 +194,6 @@ void AItem::SetItemProperties(EItemState State)
 		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
-	case EItemState::EIS_PickedUp:
-		break;
 	case EItemState::EIS_Equipped:
 		PickupWidget->SetVisibility(false);
 		// Set Mesh Properties
@@ -213,6 +214,7 @@ void AItem::SetItemProperties(EItemState State)
 		// SetMesh Properties
 		ItemMesh->SetSimulatePhysics(true);
 		ItemMesh->SetEnableGravity(true);
+		ItemMesh->SetVisibility(true);
 		ItemMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		ItemMesh->SetCollisionResponseToChannel(ECC_WorldStatic, ECollisionResponse::ECR_Block);
@@ -225,7 +227,20 @@ void AItem::SetItemProperties(EItemState State)
 		break;
 	case EItemState::EIS_MAX:
 		break;
-	default:
+	case EItemState::EIS_PickedUp:
+		PickupWidget->SetVisibility(false);
+		// Set Mesh Properties
+		ItemMesh->SetSimulatePhysics(false);
+		ItemMesh->SetEnableGravity(false);
+		ItemMesh->SetVisibility(false);
+		ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Set AreaShpre Properties
+		AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Set Box Collision Properties
+		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
 	}
 }
@@ -287,7 +302,7 @@ void AItem::FinishInterping()
 		//Substract 1 from the item count of the interp location
 		Character->IncrimentInterpLocItemCount(InterpLocIndex, -1);
 		Character->GetPickupItem(this);
-		SetItemState(EItemState::EIS_PickedUp);
+		
 	}
 	
 
