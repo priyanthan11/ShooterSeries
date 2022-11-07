@@ -1056,11 +1056,11 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	// Weapon Select
 	PlayerInputComponent->BindAction("FKey", IE_Pressed, this, &AShooterCharacter::FKeyPressed);
-	PlayerInputComponent->BindAction("FirstKey", IE_Pressed, this, &AShooterCharacter::FirstKeyPressed);
-	PlayerInputComponent->BindAction("SecondKey", IE_Pressed, this, &AShooterCharacter::SecondKeyPressed);
-	PlayerInputComponent->BindAction("ThirdtKey", IE_Pressed, this, &AShooterCharacter::ThirdKeyPressed);
-	PlayerInputComponent->BindAction("ForthtKey", IE_Pressed, this, &AShooterCharacter::ForthKeyPressed);
-	PlayerInputComponent->BindAction("FirthKey", IE_Pressed, this, &AShooterCharacter::FifthKeyPressed);
+	PlayerInputComponent->BindAction("1tKey", IE_Pressed, this, &AShooterCharacter::FirstKeyPressed);
+	PlayerInputComponent->BindAction("2Key", IE_Pressed, this, &AShooterCharacter::SecondKeyPressed);
+	PlayerInputComponent->BindAction("3Key", IE_Pressed, this, &AShooterCharacter::ThirdKeyPressed);
+	PlayerInputComponent->BindAction("4Key", IE_Pressed, this, &AShooterCharacter::ForthKeyPressed);
+	PlayerInputComponent->BindAction("5Key", IE_Pressed, this, &AShooterCharacter::FifthKeyPressed);
 
 
 }
