@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/DataTable.h"
 #include "Item.generated.h"
 
 UENUM(BlueprintType)
@@ -38,6 +39,29 @@ enum class EItemType :uint8
 
 	EIT_Max UMETA(DisplayName = "Default Max")
 };
+
+USTRUCT(BlueprintType)
+struct FItemRarityTable : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLinearColor GlowColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLinearColor LightColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLinearColor DarkColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 NumberofStars;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* ItemBackground;
+
+};
+
 
 UCLASS()
 class SHOOTER_API AItem : public AActor
@@ -127,7 +151,7 @@ private:
 	int32 ItemCount;
 
 	/** Item rarity - determines number of stars in pickup widget **/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity", meta = (AllowPrivateAccess = "true"))
 	EItemRarity ItemRarity;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	TArray<bool> ActiveStars;
@@ -215,9 +239,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	float FresnalReflectFraction;
 
-	//backgroud for this item in inventory
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
-	UTexture2D* IconBackground;
+	
 	//Icon for this item in inventory
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
 	UTexture2D* IconItem;
@@ -231,7 +253,29 @@ private:
 	// True when the character inventory full
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
 	bool bCharacterInventoryFull;
+
+	//Item rarity data table
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable", meta = (AllowPrivateAccess = "meta"))
+	class UDataTable* ItemRarityDataTable;
 	
+
+	//Glow color in the glow material
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
+	FLinearColor GlowColor;
+
+	//Light Color
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
+	FLinearColor LightColor;
+	//Darkcolor
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
+	FLinearColor DarkColor;
+	//Stars
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
+	int32 NumberofStars;
+	//backgroud for this item in inventory
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
+	UTexture2D* IconBackground;
+
 public:
 
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }

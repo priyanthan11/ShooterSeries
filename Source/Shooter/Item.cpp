@@ -437,6 +437,42 @@ void AItem::OnConstruction(const FTransform& Transform)
 		ItemMesh->SetMaterial(MaterialIndex, DynamicMaterialInstance);
 	}
 	EnableGlowMateial();
+
+	// Load the data in the Item rarity data table
+	//Path to item Rarity Item raityTable
+	FString RarityTablePath = (TEXT("DataTable'/Game/_Game/DataTable/ItemRarityDataTable.ItemRarityDataTable'"));
+
+	UDataTable* RarityTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(),nullptr,*RarityTablePath));
+	FItemRarityTable* RarityRow = nullptr;
+	if (RarityTableObject)
+	{
+		switch (ItemRarity)
+		{
+		case EItemRarity::EIR_Damaged:
+			RarityRow = RarityTableObject->FindRow<FItemRarityTable>(FName("Damaged"), TEXT(""));
+			break;
+		case EItemRarity::EIR_Common:
+			RarityRow = RarityTableObject->FindRow<FItemRarityTable>(FName("Common"), TEXT(""));
+			break;
+		case EItemRarity::EIR_Uncommon:
+			RarityRow = RarityTableObject->FindRow<FItemRarityTable>(FName("Uncommon"), TEXT(""));
+			break;
+		case EItemRarity::EIR_Rare:
+			RarityRow = RarityTableObject->FindRow<FItemRarityTable>(FName("Rare"), TEXT(""));
+			break;
+		case EItemRarity::EIR_Legendary:
+			RarityRow = RarityTableObject->FindRow<FItemRarityTable>(FName("Legendary"), TEXT(""));
+			break;
+		}
+		if (RarityRow)
+		{
+			GlowColor = RarityRow->GlowColor;
+			LightColor = RarityRow->LightColor;
+			DarkColor = RarityRow->DarkColor;
+			NumberofStars = RarityRow->NumberofStars;
+			IconBackground = RarityRow->ItemBackground;
+		}
+	}
 }
 
 void AItem::EnableGlowMateial()
