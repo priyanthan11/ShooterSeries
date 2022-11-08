@@ -47,7 +47,8 @@ FresnalReflectFraction(4.f),
 pulseCurvetime(5.f),
 
 // Item slot
-SlotIndex(0)
+SlotIndex(0),
+bCharacterInventoryFull(false)
 
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -113,6 +114,7 @@ void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		if (ShooterCharacter)
 		{
 			ShooterCharacter->IncrementOverlappedItemCount(-1);
+			ShooterCharacter->UnHiglightedInventorySlot();
 		}
 	}
 }
@@ -263,7 +265,7 @@ void AItem::SetItemState(EItemState State)
 	SetItemProperties(State);
 }
 
-void AItem::StartItemCurve(AShooterCharacter* Char)
+void AItem::StartItemCurve(AShooterCharacter* Char, bool bForcePlaySound)
 {
 	// Store a handle to the character
 	Character = Char;
@@ -273,7 +275,7 @@ void AItem::StartItemCurve(AShooterCharacter* Char)
 	// Add 1 to the item count for this interp location strut
 	Character->IncrimentInterpLocItemCount(InterpLocIndex, 1);
 
-	PlayPickupSound();
+	PlayPickupSound(bForcePlaySound);
 	// Store initial location of Item
 	ItemInterpStartLocation = GetActorLocation();
 	bInterping = true;
@@ -302,6 +304,8 @@ void AItem::FinishInterping()
 		//Substract 1 from the item count of the interp location
 		Character->IncrimentInterpLocItemCount(InterpLocIndex, -1);
 		Character->GetPickupItem(this);
+
+		Character->UnHiglightedInventorySlot();
 		
 	}
 	
@@ -380,11 +384,18 @@ FVector AItem::GetInterpLocation()
 	return FVector();
 }
 
-void AItem::PlayPickupSound()
+void AItem::PlayPickupSound(bool bForcePlaySound)
 {
 	if (Character)
 	{
-		if (Character->ShouldPlayPickupSound())
+		if (bForcePlaySound)
+		{
+			if (PickupSound)
+			{
+				UGameplayStatics::PlaySound2D(this, PickupSound);
+			}
+		}
+		else if (Character->ShouldPlayPickupSound())
 		{
 			Character->StartPickupSoundTimer();
 			if (PickupSound)
@@ -492,17 +503,24 @@ void AItem::UpdatePulse()
 	
 }
 
-void AItem::PlayEquipSound()
+void AItem::PlayEquipSound(bool bForcePlaySound)
 {
 	if (Character)
 	{
-		if (Character->ShouldPlayEquipedSound())
+		if (bForcePlaySound)
 		{
-			Character->StartEquipSoundTimer();
 			if (PickupSound)
 			{
 				UGameplayStatics::PlaySound2D(this, EquipSound);
 			}
+		}
+		else if (Character->ShouldPlayEquipedSound())
+		{
+				Character->StartEquipSoundTimer();
+				if (PickupSound)
+				{
+					UGameplayStatics::PlaySound2D(this, EquipSound);
+				}
 		}
 	}
 }

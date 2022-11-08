@@ -82,7 +82,7 @@ protected:
 	// Get interplocation based on interpType
 	FVector GetInterpLocation();
 
-	void PlayPickupSound();
+	void PlayPickupSound(bool bForcePlaySound = false);
 	
 	
 	virtual void InitializeCustomDepth();
@@ -97,11 +97,12 @@ protected:
 	void UpdatePulse();
 	
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void PlayEquipSound();
+	void PlayEquipSound(bool bForcePlaySound = false);
 private:
 
 /* Skeletel mesh for Iteams*/
@@ -226,6 +227,10 @@ private:
 	// Slot in the inventory
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
 	int32 SlotIndex;
+
+	// True when the character inventory full
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
+	bool bCharacterInventoryFull;
 	
 public:
 
@@ -241,9 +246,11 @@ public:
 	FORCEINLINE int32 GetItemCount() const { return ItemCount; }
 	FORCEINLINE int32 GetSlotIndex() const { return SlotIndex; }
 	FORCEINLINE void SetSlotIndex(int32 Index) { SlotIndex = Index; }
+	FORCEINLINE void SetCharacter(AShooterCharacter* Char) { Character = Char; }
+	FORCEINLINE void SetCharacterInventoryFull(bool bFull) { bCharacterInventoryFull = bFull; }
 
 	// Call from the shooter Character class
-	void StartItemCurve(AShooterCharacter* Char);
+	void StartItemCurve(AShooterCharacter* Char, bool bForcePlaySound = false);
 	virtual void EnableCustomDepth();
 	virtual void DisableCustomDepth();
 	void DisableGlowMaterial();

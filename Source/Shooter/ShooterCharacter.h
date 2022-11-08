@@ -34,7 +34,7 @@ struct FIntepLocation
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEquipItemDelegate, int32, CurrentSlotIndex, int32, NewSlotIndex);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHighlightIconDelegate, int32, SlotIndex, bool, bStartAnimation);
 UCLASS()
 class SHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -119,7 +119,7 @@ protected:
 	class AWeapon* SpawnDefaultWeapon();
 
 	/*Takes a weapon and attaches it the mesh*/
-	void EquipWeapon( AWeapon* WeaponToEquipped);
+	void EquipWeapon( AWeapon* WeaponToEquipped, bool bSwapping = false);
 
 	/*Detach weapon from mesh and let it fall to the ground*/
 	void DropWeapon();
@@ -186,6 +186,10 @@ protected:
 	void FifthKeyPressed();
 
 	void ExchangeInventoryItem(int32 CurrentItemIndex, int32 NewItemIndex);
+
+	int32 GetEmptyInventorySlot();
+	void HiglightedInventorySlot();
+	
 
 public:	
 	// Called every frame
@@ -445,6 +449,13 @@ private:
 	// Dlegate for sending slot information to invetartybar when equipping item
 	UPROPERTY(BlueprintAssignable, Category = "Delegate", meta = (AllowPrivateAccess = "true"))
 	FEquipItemDelegate EquipItemDelegate;
+	// Dlegate for sending slot information to playing the icon animation
+	UPROPERTY(BlueprintAssignable, Category = "Delegate", meta = (AllowPrivateAccess = "true"))
+	FHighlightIconDelegate HighlightIconDelegate;
+
+	// The inde for curntly highlighted slot
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	int32 HighlightedSlot;
 
 
 public:
@@ -481,4 +492,6 @@ public:
 
 	void StartPickupSoundTimer();
 	void StartEquipSoundTimer();
+
+	void UnHiglightedInventorySlot();
 };
