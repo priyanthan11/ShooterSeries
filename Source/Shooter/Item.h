@@ -70,8 +70,8 @@ UCLASS()
 class SHOOTER_API AItem : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AItem();
 
@@ -81,17 +81,17 @@ protected:
 
 	// Called when overlapping areasphere
 	UFUNCTION()
-	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult);
+		void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
 	// called when end overlapping arespere
 	UFUNCTION()
-	void OnSphereEndOverlap( UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex);
+		void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor, UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex);
 
 
 	/*Set the active stars arrays of bool based on rarity */
@@ -110,8 +110,8 @@ protected:
 	FVector GetInterpLocation();
 
 	void PlayPickupSound(bool bForcePlaySound = false);
-	
-	
+
+
 	virtual void InitializeCustomDepth();
 
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -122,58 +122,58 @@ protected:
 	void ResetPulsTimer();
 
 	void UpdatePulse();
-	
 
 
-public:	
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void PlayEquipSound(bool bForcePlaySound = false);
 private:
 
-/* Skeletel mesh for Iteams*/
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* ItemMesh;
+	/* Skeletel mesh for Iteams*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+		USkeletalMeshComponent* ItemMesh;
 
 	/* Line  trace Collides with box to show HUD widgets */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* CollisionBox;
+		class UBoxComponent* CollisionBox;
 	// Popup widget when the player looks at the item
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))	
-	class UWidgetComponent* PickupWidget;
-	 /** Enable iteam tracing when overlaps **/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class USphereComponent* AreaSphere;
- 
+		class UWidgetComponent* PickupWidget;
+	/** Enable iteam tracing when overlaps **/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+		class USphereComponent* AreaSphere;
+
 	/*Name Which appears on the pickup widget */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	FString ItemName;
+		FString ItemName;
 	/** Item Count (ammo, etc **/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	int32 ItemCount;
+		int32 ItemCount;
 
 	/** Item rarity - determines number of stars in pickup widget **/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity", meta = (AllowPrivateAccess = "true"))
-	EItemRarity ItemRarity;
+		EItemRarity ItemRarity;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	TArray<bool> ActiveStars;
+		TArray<bool> ActiveStars;
 
 	/* State of the item */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	EItemState ItemState;
+		EItemState ItemState;
 
 	// The Curve asset to use for the items z location with inerpolation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UCurveFloat* ItemZCurve;
+		class UCurveFloat* ItemZCurve;
 
 	// Starting locationwhen interp begins
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	FVector ItemInterpStartLocation;
+		FVector ItemInterpStartLocation;
 
 	//Target interp location in frot the camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	FVector CameraTargetLocation;
+		FVector CameraTargetLocation;
 	// When interping
 	bool bInterping;
 
@@ -182,11 +182,11 @@ private:
 
 	// Pointer to Character
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class AShooterCharacter* Character;
+		class AShooterCharacter* Character;
 
 	// Duration of the curve and timer
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	float ZCurveTime;
+		float ZCurveTime;
 
 	// X and Y for the item while interping with EquippedInterp
 	float ItemInterpX;
@@ -198,86 +198,86 @@ private:
 
 	// The Curve asset to use for the items to scale when inerpolation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UCurveFloat* ItemScaleCurve;
+		class UCurveFloat* ItemScaleCurve;
 
 	// Sound played when item pickup
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class USoundCue* PickupSound;
+		class USoundCue* PickupSound;
 
 	// Sound played when item Equiped
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	USoundCue* EquipSound;
+		USoundCue* EquipSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	EItemType ItemType;
+		EItemType ItemType;
 
 	// Index of the interp location this item is interping to
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	int32 InterpLocIndex;
+		int32 InterpLocIndex;
 
 	//Material change in run time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	int32 MaterialIndex;
+		int32 MaterialIndex;
 	/* Dynamic instance that we can change in runtime*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	UMaterialInstanceDynamic* DynamicMaterialInstance;
+		UMaterialInstanceDynamic* DynamicMaterialInstance;
 	/* Material Instance that use with dynamic material Instance*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	UMaterialInstance* MaterialInstance;
+		UMaterialInstance* MaterialInstance;
 
 	bool bCanChangeCustumDepth;
 	//Curve to derive the dynamicmaterial parameter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	class UCurveVector* pulseCurve;
+		class UCurveVector* pulseCurve;
 	//Curve to derive the dynamicmaterial parameter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	UCurveVector* InsterpPulseCurve;
+		UCurveVector* InsterpPulseCurve;
 	FTimerHandle PulseTimer;
 	//Time for pulse timer
 	float pulseCurvetime;
 	UPROPERTY(VisibleAnywhere, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	float GlowAmount;
+		float GlowAmount;
 	UPROPERTY(VisibleAnywhere, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	float FresnalExponent;
+		float FresnalExponent;
 	UPROPERTY(VisibleAnywhere, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
-	float FresnalReflectFraction;
+		float FresnalReflectFraction;
 
-	
+
 	//Icon for this item in inventory
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
-	UTexture2D* IconItem;
+		UTexture2D* IconItem;
 	//Icon for this Ammo in inventory
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
-	UTexture2D* AmmoItem;
+		UTexture2D* AmmoItem;
 	// Slot in the inventory
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
-	int32 SlotIndex;
+		int32 SlotIndex;
 
 	// True when the character inventory full
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "meta"))
-	bool bCharacterInventoryFull;
+		bool bCharacterInventoryFull;
 
 	//Item rarity data table
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable", meta = (AllowPrivateAccess = "meta"))
-	class UDataTable* ItemRarityDataTable;
-	
+		class UDataTable* ItemRarityDataTable;
+
 
 	//Glow color in the glow material
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
-	FLinearColor GlowColor;
+		FLinearColor GlowColor;
 
 	//Light Color
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
-	FLinearColor LightColor;
+		FLinearColor LightColor;
 	//Darkcolor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
-	FLinearColor DarkColor;
+		FLinearColor DarkColor;
 	//Stars
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
-	int32 NumberofStars;
+		int32 NumberofStars;
 	//backgroud for this item in inventory
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rarity", meta = (AllowPrivateAccess = "meta"))
-	UTexture2D* IconBackground;
+		UTexture2D* IconBackground;
 
 public:
 
@@ -295,6 +295,11 @@ public:
 	FORCEINLINE void SetSlotIndex(int32 Index) { SlotIndex = Index; }
 	FORCEINLINE void SetCharacter(AShooterCharacter* Char) { Character = Char; }
 	FORCEINLINE void SetCharacterInventoryFull(bool bFull) { bCharacterInventoryFull = bFull; }
+	FORCEINLINE void SetPickupSound(USoundCue* Sound) { PickupSound = Sound; }
+	FORCEINLINE void SetEquipSound(USoundCue* Sound) { EquipSound = Sound; }
+	FORCEINLINE void SetItemName(FString Name) { ItemName = Name; }
+	FORCEINLINE void SetIconItem(UTexture2D* Icon) { IconItem = Icon; }
+	FORCEINLINE void SetAmmoIcon(UTexture2D* Icon) { AmmoItem = Icon; }
 
 	// Call from the shooter Character class
 	void StartItemCurve(AShooterCharacter* Char, bool bForcePlaySound = false);

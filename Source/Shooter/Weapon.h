@@ -21,7 +21,7 @@ struct FWeaponData :public FTableRowBase
 {
 	GENERATED_BODY()
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAmmoType AmmoType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 WeaponAmmo;
@@ -31,8 +31,6 @@ struct FWeaponData :public FTableRowBase
 		class USoundCue* PickupSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* EquipSound;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UWidgetComponent* PickupWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USkeletalMesh* ItemMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -62,6 +60,7 @@ protected:
 		
 	void StopFalling();
 
+	virtual void OnConstruction(const FTransform& Transform) override;
 	
 	
 private:
