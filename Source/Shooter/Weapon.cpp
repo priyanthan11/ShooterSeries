@@ -74,17 +74,19 @@ void AWeapon::StopFalling()
 void AWeapon::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
+
 	const FString WeaponTablePath = TEXT("DataTable'/Game/_Game/DataTable/WeaponTypeDataTable.WeaponTypeDataTable'");
 	UDataTable* WeaponTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *WeaponTablePath));
 	if (WeaponTableObject)
 	{
 		FWeaponData* WeaponDataRow = nullptr;
+
 		switch (WeaponType)
 		{
 		case EWeaponType::EWT_SubmachineGun:
 			WeaponDataRow = WeaponTableObject->FindRow<FWeaponData>(FName("SubmachineGun"), TEXT(""));
 			break;
-		case EWeaponType::EWT_AssultRifle:
+		case EWeaponType::EWT_AssaultRifle:
 			WeaponDataRow = WeaponTableObject->FindRow<FWeaponData>(FName("AssaultRifle"), TEXT(""));
 			break;
 		}
@@ -103,8 +105,9 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 			SetMaterialInstance(WeaponDataRow->MaterialInstance);
 			PreviousMaterialIndex = GetMaterialIndex();
 			GetItemMesh()->SetMaterial(PreviousMaterialIndex, nullptr);
-			SetMaterialInstance(WeaponDataRow->MaterialIndex);
+			SetMaterialIndex(WeaponDataRow->MaterialIndex);
 		}
+
 		if (GetMaterialInstance())
 		{
 			SetDynamicMaterialInstance(UMaterialInstanceDynamic::Create(GetMaterialInstance(), this));

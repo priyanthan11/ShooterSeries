@@ -309,7 +309,7 @@ public:
 	FORCEINLINE void SetAmmoIcon(UTexture2D* Icon) { AmmoItem = Icon; }
 	FORCEINLINE void SetMaterialInstance(UMaterialInstance* Instance) { MaterialInstance = Instance; }
 	FORCEINLINE void SetDynamicMaterialInstance(UMaterialInstanceDynamic* Instance) { DynamicMaterialInstance = Instance; }
-	FORCEINLINE void SetMaterialInstance(int32 Index) { MaterialIndex = Index; }
+	FORCEINLINE void SetMaterialIndex(int32 Index) { MaterialIndex = Index; }
 
 	// Call from the shooter Character class
 	void StartItemCurve(AShooterCharacter* Char, bool bForcePlaySound = false);
