@@ -29,7 +29,9 @@ UShooterAnimInstance::UShooterAnimInstance() :
 
 	//TurnInplace
 	RecoilWeigt(0.f),
-	bTurnInPlace(false)
+	bTurnInPlace(false),
+	EquippedWeaponType(EWeaponType::EWT_MAX),
+	bShouldUseFABRIK(false)
 	
 {
 }
@@ -45,6 +47,8 @@ void UShooterAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		bCrouching = ShooterCharacter->GetCrouching();
 		bReloading = ShooterCharacter->GetCombatState() == ECombatState::ECS_Reload;
 		bEqupping  = ShooterCharacter->GetCombatState() == ECombatState::ECS_Equipping;
+		bShouldUseFABRIK = ShooterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied
+			|| ShooterCharacter->GetCombatState() == ECombatState::ECS_FireTimerInPrograss;
 
 		// Ge the lateral Speed of the character
 		FVector Velocity = ShooterCharacter->GetVelocity();

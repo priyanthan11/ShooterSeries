@@ -122,7 +122,10 @@ private:
 		bool bTurnInPlace;
 
 	/*Weapon Type for currently Equipped Weapon*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Weapon Type", meta = (AllowPrivateAccess = "true"))
 	EWeaponType EquippedWeaponType;
+	// True when not Reloading or Equipping
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Weapon Type", meta = (AllowPrivateAccess = "true"))
+	bool bShouldUseFABRIK;
 
 };
