@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Weapon.h"
 #include "ShooterAnimInstance.generated.h"
 
 UENUM(BlueprintType)
@@ -119,5 +120,9 @@ private:
 	//True When turn in Place
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
 		bool bTurnInPlace;
+
+	/*Weapon Type for currently Equipped Weapon*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = " Lean", meta = (AllowPrivateAccess = "true"))
+	EWeaponType EquippedWeaponType;
 
 };

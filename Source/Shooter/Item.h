@@ -282,12 +282,12 @@ private:
 
 public:
 
+	void SetItemState(EItemState State);
+
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
 	FORCEINLINE USphereComponent* GetAreaShere() const { return AreaSphere; }
 	FORCEINLINE UBoxComponent* GetCollisionBox() const { return CollisionBox; }
-
 	FORCEINLINE EItemState GetItemState() const { return ItemState; }
-	void SetItemState(EItemState State);
 	FORCEINLINE USkeletalMeshComponent* GetItemMesh() const { return ItemMesh; }
 	FORCEINLINE USoundCue* GetPickupSound() const { return PickupSound; }
 	FORCEINLINE USoundCue* GetEquipSound() const { return EquipSound; }

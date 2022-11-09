@@ -75,19 +75,19 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	const FString WeaponTablePath = TEXT("DataTable'/Game/_Game/DataTable/WeaponTypeDataTable.WeaponTypeDataTable'");
+	const FString WeaponTablePath = TEXT("DataTable'/Game/_Game/DataTable/WeaponDataTable.WeaponDataTable'");
 	UDataTable* WeaponTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *WeaponTablePath));
 	if (WeaponTableObject)
 	{
-		FWeaponData* WeaponDataRow = nullptr;
+		FWeaponDataTable* WeaponDataRow = nullptr;
 
 		switch (WeaponType)
 		{
 		case EWeaponType::EWT_SubmachineGun:
-			WeaponDataRow = WeaponTableObject->FindRow<FWeaponData>(FName("SubmachineGun"), TEXT(""));
+			WeaponDataRow = WeaponTableObject->FindRow<FWeaponDataTable>(FName("SubmachineGun"), TEXT(""));
 			break;
 		case EWeaponType::EWT_AssaultRifle:
-			WeaponDataRow = WeaponTableObject->FindRow<FWeaponData>(FName("AssaultRifle"), TEXT(""));
+			WeaponDataRow = WeaponTableObject->FindRow<FWeaponDataTable>(FName("AssaultRifle"), TEXT(""));
 			break;
 		}
 		if (WeaponDataRow)

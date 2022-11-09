@@ -494,4 +494,8 @@ public:
 	void StartEquipSoundTimer();
 
 	void UnHiglightedInventorySlot();
+
+	FORCEINLINE AWeapon* GetEquppedWeapon() const { return EquippedWeapon; }
+
+
 };
