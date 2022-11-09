@@ -39,6 +39,12 @@ struct FWeaponData :public FTableRowBase
 		UTexture2D* InventoryIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UTexture2D* AmmoIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UMaterialInstance* MaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 MaterialIndex;
 };
 /**
  * 
@@ -102,6 +108,8 @@ private:
 	float RateOfFire;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable", meta = (AllowPrivateAccess = "true"))
 	UDataTable* WeaponTable;
+
+	int32 PreviousMaterialIndex;
 
 public:
 
