@@ -725,7 +725,8 @@ void AShooterCharacter::ExchangeInventoryItem(int32 CurrentItemIndex, int32 NewI
 {
 	const bool bCanExchangeItem = (CurrentItemIndex != NewItemIndex) &&
 		(NewItemIndex < Inventory.Num()) &&
-		(CombatState == ECombatState::ECS_Unoccupied || CombatState == ECombatState::ECS_Equipping);
+		(CombatState == ECombatState::ECS_Unoccupied 
+		|| CombatState == ECombatState::ECS_Equipping);
 
 	if (bCanExchangeItem)
 	{
@@ -829,7 +830,7 @@ void AShooterCharacter::TraceForItems()
 		if (ItemTraceResult.bBlockingHit)
 		{
 			TraceHitItem = Cast<AItem>(ItemTraceResult.GetActor());
-			auto TraceHitWeapon = Cast<AWeapon>(TraceHitItem);
+			const auto TraceHitWeapon = Cast<AWeapon>(TraceHitItem);
 			if (TraceHitWeapon)
 			{
 				if (HighlightedSlot == -1)
