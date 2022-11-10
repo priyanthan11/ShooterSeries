@@ -117,7 +117,7 @@ protected:
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	void EnableGlowMateial();
+	void EnableGlowMaterial();
 
 	void StartPulseTimer();
 	void ResetPulsTimer();

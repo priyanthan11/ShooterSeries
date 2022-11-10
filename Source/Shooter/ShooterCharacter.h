@@ -240,12 +240,6 @@ private:
 	float MouseAimingTurnRate;
 
 
-	// Randomize fire sound cue
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	class USoundCue* FireSound;
-	//  Flash spawned at muzzel location
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	class UParticleSystem* MuzzleFlash;
 	/* Montage for firing weapon */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* HipFireMontage;
@@ -303,9 +297,6 @@ private:
 
 	/** True when we can fire false when waiting for the timer **/
 	bool bShouldFire;
-
-	/** Rate of automatioc Gun fire**/
-	float AutomaticFireRate;
 
 	/* Set timer between gun shots*/
 	FTimerHandle AutoFireTimer;

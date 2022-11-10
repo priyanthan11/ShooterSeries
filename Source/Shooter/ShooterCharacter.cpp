@@ -59,7 +59,6 @@ AShooterCharacter::AShooterCharacter() :
 
 	//Automatic  fire Variables
 	bShouldFire(true),
-	AutomaticFireRate(0.1f),
 	bFireButtonPressed(false),
 
 	// Item Trace Variables
@@ -450,7 +449,7 @@ void AShooterCharacter::StartFireTimer()
 
 		GetWorldTimerManager().SetTimer
 		(AutoFireTimer, this,
-			&AShooterCharacter::AutoFireReset, EquippedWeapon->GetRateOfFire());
+			&AShooterCharacter::AutoFireReset, EquippedWeapon->GetAutoFireRate());
 
 
 		//AutomaticFireRate
@@ -928,7 +927,7 @@ void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquipped, bool bSwapping)
 			EquipItemDelegate.Broadcast(EquippedWeapon->GetSlotIndex(), WeaponToEquipped->GetSlotIndex());
 		}
 
-
+		// Set EquippedWeapon to the newly spawned Weapon
 		EquippedWeapon = WeaponToEquipped;
 		EquippedWeapon->SetItemState(EItemState::EIS_Equipped);
 	}
@@ -949,9 +948,9 @@ void AShooterCharacter::DropWeapon()
 
 void AShooterCharacter::SelectButtonPressed()
 {
+	if (CombatState != ECombatState::ECS_Unoccupied) return;
 	if (TraceHitItem)
 	{
-		if (CombatState != ECombatState::ECS_Unoccupied) return;
 		TraceHitItem->StartItemCurve(this,true);
 		TraceHitItem = nullptr;
 	}
@@ -964,7 +963,7 @@ void AShooterCharacter::SelectButtonReleased()
 
 void AShooterCharacter::SwapWeapon(AWeapon* WeaponToSwap)
 {
-	if (Inventory.Num() -1 > EquippedWeapon->GetSlotIndex())
+	if (Inventory.Num() - 1 >= EquippedWeapon->GetSlotIndex())
 	{
 		Inventory[EquippedWeapon->GetSlotIndex()] = WeaponToSwap;
 		WeaponToSwap->SetSlotIndex(EquippedWeapon->GetSlotIndex());
@@ -993,9 +992,9 @@ bool AShooterCharacter::WeaponHasAmmo()
 
 void AShooterCharacter::PlayFireSound()
 {
-	if (FireSound)
+	if (EquippedWeapon->GetFireSound())
 	{
-		UGameplayStatics::PlaySound2D(this, FireSound);
+		UGameplayStatics::PlaySound2D(this, EquippedWeapon->GetFireSound());
 	}
 }
 
@@ -1010,9 +1009,9 @@ void AShooterCharacter::SentBullet()
 	{
 		// Get the actual  Transform (location, Rotation, Scale)  of the socket 
 		const FTransform SocketTransform = BarrelSocket->GetSocketTransform(EquippedWeapon->GetItemMesh());
-		if (MuzzleFlash)
+		if (EquippedWeapon->GetMuzzleFlash())
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, SocketTransform);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EquippedWeapon->GetMuzzleFlash(), SocketTransform);
 		}
 
 		FVector BeamEnd;

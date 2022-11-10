@@ -14,6 +14,9 @@ AWeapon::AWeapon():
 	//Weapon type
 	WeaponType(EWeaponType::EWT_SubmachineGun),
 
+	// Ammo
+	AmmoType(EAmmoType::EAT_9mm),
+
 	// Montage Section Name
 	ReloadMontageSection(TEXT("Reload_SMG")),
 
@@ -22,9 +25,7 @@ AWeapon::AWeapon():
 
 	// ClipBoneDefault
 	ClipBoneName(TEXT("smg_clip")),
-
-	//Rate Of Fire
-	RateOfFire(0.1f)
+	SlideDisplacement(0)
 
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -60,7 +61,7 @@ void AWeapon::ThrowWeapon()
 
 	bFalling = true;
 	GetWorldTimerManager().SetTimer(ThrowWeaponTimer, this, &AWeapon::StopFalling, ThrowWeaponTime);
-	EnableGlowMateial();
+	EnableGlowMaterial();
 
 }
 
@@ -89,7 +90,11 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 		case EWeaponType::EWT_AssaultRifle:
 			WeaponDataRow = WeaponTableObject->FindRow<FWeaponDataTable>(FName("AssaultRifle"), TEXT(""));
 			break;
+		case EWeaponType::EWT_Pistol:
+			WeaponDataRow = WeaponTableObject->FindRow<FWeaponDataTable>(FName("Pistol"), TEXT(""));
+			break;
 		}
+
 		if (WeaponDataRow)
 		{
 			AmmoType = WeaponDataRow->AmmoType;
@@ -106,6 +111,19 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 			PreviousMaterialIndex = GetMaterialIndex();
 			GetItemMesh()->SetMaterial(PreviousMaterialIndex, nullptr);
 			SetMaterialIndex(WeaponDataRow->MaterialIndex);
+			SetBoneClipName(WeaponDataRow->ClipBoneName);
+			SetReloadMontageSection(WeaponDataRow->ReloadMontageSection);
+			GetItemMesh()->SetAnimInstanceClass(WeaponDataRow->AnimBP);
+			CrosshairsMiddle = WeaponDataRow->CrosshairsMiddle;
+			CrosshairsLeft = WeaponDataRow->CrosshairsLeft;
+			CrosshairsRight = WeaponDataRow->CrosshairsRight;
+			CrosshairsBottom = WeaponDataRow->CrosshairsBottom;
+			CrosshairTop = WeaponDataRow->CrosshairTop;
+			AutoFireRate = WeaponDataRow->AutoFireRate;
+			MuzzleFlash = WeaponDataRow->MuzzleFlash;
+			FireSound = WeaponDataRow->FireSound;
+			BoneToHide = WeaponDataRow->BoneToHide;
+		
 		}
 
 		if (GetMaterialInstance())
@@ -114,8 +132,19 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 			GetDynamicMaterialInstance()->SetVectorParameterValue(TEXT("FresnelColor"), GetGlowColor());
 			GetItemMesh()->SetMaterial(GetMaterialIndex(), GetDynamicMaterialInstance());
 
-			EnableGlowMateial();
+			
+			EnableGlowMaterial();
 		}
+	}
+}
+
+void AWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (BoneToHide != FName(""))
+	{
+		GetItemMesh()->HideBoneByName(BoneToHide, EPhysBodyOp::PBO_None);
 	}
 }
 

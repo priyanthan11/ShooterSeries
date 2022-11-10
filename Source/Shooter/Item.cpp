@@ -227,8 +227,7 @@ void AItem::SetItemProperties(EItemState State)
 		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
-	case EItemState::EIS_MAX:
-		break;
+		
 	case EItemState::EIS_PickedUp:
 		PickupWidget->SetVisibility(false);
 		// Set Mesh Properties
@@ -478,12 +477,12 @@ void AItem::OnConstruction(const FTransform& Transform)
 		DynamicMaterialInstance->SetVectorParameterValue(TEXT("FresnelColor"), GlowColor);
 		ItemMesh->SetMaterial(MaterialIndex, DynamicMaterialInstance);
 
-		EnableGlowMateial();
+		EnableGlowMaterial();
 	}
 
 }
 
-void AItem::EnableGlowMateial()
+void AItem::EnableGlowMaterial()
 {
 	if (DynamicMaterialInstance)
 	{
