@@ -190,6 +190,8 @@ protected:
 	int32 GetEmptyInventorySlot();
 	void HiglightedInventorySlot();
 	
+	UFUNCTION(BlueprintCallable)
+	EPhysicalSurface GetSurfaceType();
 
 public:	
 	// Called every frame

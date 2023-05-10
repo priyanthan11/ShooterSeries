@@ -486,7 +486,7 @@ void AItem::EnableGlowMaterial()
 {
 	if (DynamicMaterialInstance)
 	{
-		DynamicMaterialInstance->SetScalarParameterValue(TEXT("Glow Blend Alpha"), 0);
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowBlendAlpha"), 0);
 	}
 }
 
@@ -494,7 +494,7 @@ void AItem::DisableGlowMaterial()
 {
 	if (DynamicMaterialInstance)
 	{
-		DynamicMaterialInstance->SetScalarParameterValue(TEXT("Glow Blend Alpha"), 1);
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowBlendAlpha"), 1);
 	}
 }
 

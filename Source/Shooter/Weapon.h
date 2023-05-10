@@ -60,6 +60,8 @@ struct FWeaponDataTable :public FTableRowBase
 		USoundCue* FireSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName BoneToHide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bAutomatic;
 };
 /**
  * 
@@ -83,7 +85,9 @@ protected:
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
-	
+	void FinishMovingSlide();
+
+	void UpdateSlideDisplacement();
 	
 private:
 
@@ -152,6 +156,27 @@ private:
 	/*Curve for the slide displacement*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pistol", meta = (AllowPrivateAccess = "true"))
 		UCurveFloat* SlideDisplacementCurve;
+
+	/* Timer hand for updationg slideDisplacement*/
+	FTimerHandle SlideTimer;
+	/*Time for Displacing the Slide duing pistol fire*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = " Pistol", meta = (AllowPrivateAccess = "true"))
+	float SlideDisplacementTime;
+	/*True When moving pistol slide*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = " Pistol", meta = (AllowPrivateAccess = "true"))
+		bool bMovingSlide;
+	/* Maximum slide displacement*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = " Pistol", meta = (AllowPrivateAccess = "true"))
+		float MaxSlideDisplacement;
+	/*Max rotation for pistol recoil*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = " Pistol", meta = (AllowPrivateAccess = "true"))
+		float MaxRecoilRotation;
+	/*Amout the pistol Rotate while pistol fire*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = " Pistol", meta = (AllowPrivateAccess = "true"))
+		float RecoilRotation;
+	/* True for auto fire*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = " Pistol", meta = (AllowPrivateAccess = "true"))
+		bool bAutomatic;
 public:
 
 	FORCEINLINE int32 GetAmmo() const { return Ammo; }
@@ -160,6 +185,7 @@ public:
 	void DecrementAmmo();
 	void ReloadAmmo(int32 Ammount);
 	bool ClipIsFull();
+	void StartSlideTimer();
 
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 	FORCEINLINE EAmmoType GetAmmoType() const { return AmmoType; }
@@ -169,6 +195,7 @@ public:
 	FORCEINLINE float GetAutoFireRate() const { return AutoFireRate; }
 	FORCEINLINE UParticleSystem* GetMuzzleFlash() const { return MuzzleFlash; }
 	FORCEINLINE USoundCue* GetFireSound() const { return FireSound; }
+	FORCEINLINE bool GetbAutomatic() const { return bAutomatic; }
 
 	FORCEINLINE void SetMovingClip(bool Move) { bMovingClip = Move; }
 	FORCEINLINE void SetBoneClipName(FName Name) { ClipBoneName = Name; }

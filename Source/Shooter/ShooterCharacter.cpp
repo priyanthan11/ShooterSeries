@@ -17,6 +17,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Ammo.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Shooter.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -112,9 +114,9 @@ AShooterCharacter::AShooterCharacter() :
 	// Create camera boom(pulls in toweards the character if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 240.f; // Camera follow this distance behind the character
+	CameraBoom->TargetArmLength = 300.f; // Camera follow this distance behind the character
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on controller
-	CameraBoom->SocketOffset = FVector(0.f, 40.f, 70.f);
+	CameraBoom->SocketOffset = FVector(0.f, 40.f, 85.f);
 
 	// Create a FollowCamera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -276,6 +278,12 @@ void AShooterCharacter::FireWeapon()
 
 		StartFireTimer();
 
+		if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Pistol)
+		{
+			// StartMoving Slide
+			EquippedWeapon->StartSlideTimer();
+		}
+
 	}
 	
 	
@@ -321,7 +329,7 @@ bool AShooterCharacter::GetBeamEndLocation(const FVector& MuzzleSocketLocation, 
 void AShooterCharacter::AimingButtonPressed()
 {
 	bAimingButtonPressed = true;
-	if (CombatState != ECombatState::ECS_Reload)
+	if (CombatState != ECombatState::ECS_Reload && CombatState != ECombatState::ECS_Equipping)
 	{
 		Aim();
 	}
@@ -460,10 +468,12 @@ void AShooterCharacter::StartFireTimer()
 void AShooterCharacter::AutoFireReset()
 {
 	CombatState = ECombatState::ECS_Unoccupied;
+	if (EquippedWeapon == nullptr) return;
+	
 
 	if (WeaponHasAmmo())
 	{
-		if (bFireButtonPressed)
+		if (bFireButtonPressed && EquippedWeapon->GetbAutomatic())
 		{
 			FireWeapon();
 		}
@@ -518,8 +528,12 @@ void AShooterCharacter::FinishReloading()
 }
 
 void AShooterCharacter::FinishEqupping()
- {
+{
 	CombatState = ECombatState::ECS_Unoccupied;
+	if (bAimingButtonPressed)
+	{
+		Aim();
+	}
 }
 
 bool AShooterCharacter::CarringAmmo()
@@ -723,20 +737,27 @@ void AShooterCharacter::FifthKeyPressed()
 
 void AShooterCharacter::ExchangeInventoryItem(int32 CurrentItemIndex, int32 NewItemIndex)
 {
-	const bool bCanExchangeItem = (CurrentItemIndex != NewItemIndex) &&
+	const bool bCanExchangeItem = 
+		(CurrentItemIndex != NewItemIndex) &&
 		(NewItemIndex < Inventory.Num()) &&
 		(CombatState == ECombatState::ECS_Unoccupied 
 		|| CombatState == ECombatState::ECS_Equipping);
 
 	if (bCanExchangeItem)
 	{
+		if (bAiming)
+		{
+			StopAim();
+		}
+
 		auto OldEquppedWeapon = EquippedWeapon;
 		auto NewWeapon = Cast<AWeapon>(Inventory[NewItemIndex]);
 		EquipWeapon(NewWeapon);
 
 		OldEquppedWeapon->SetItemState(EItemState::EIS_PickedUp);
 		NewWeapon->SetItemState(EItemState::EIS_Equipped);
-
+		UE_LOG(LogTemp,Warning,TEXT("Exchange Weapn"))
+		
 		CombatState = ECombatState::ECS_Equipping;
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance && EquppingMontage)
@@ -771,6 +792,21 @@ void AShooterCharacter::HiglightedInventorySlot()
 	const int32 EmptySlot{ GetEmptyInventorySlot() };
 	HighlightIconDelegate.Broadcast(EmptySlot, true);
 	HighlightedSlot = EmptySlot;
+}
+
+EPhysicalSurface AShooterCharacter::GetSurfaceType()
+{
+	FHitResult HitResult;
+	const FVector Start = GetActorLocation();
+	const FVector End{ Start + FVector(0.f,0.f,-400.f) };
+	FCollisionQueryParams QueryParams;
+	QueryParams.bReturnPhysicalMaterial = true;
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams);
+	
+	return UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+
+
 }
 
 void AShooterCharacter::UnHiglightedInventorySlot()
@@ -869,7 +905,7 @@ void AShooterCharacter::TraceForItems()
 				}
 
 			}
-			// We hi an AItem last frame
+			// We hit an AItem last frame
 			if (TraceHitItemLastFrame)
 			{
 				if (TraceHitItem != TraceHitItemLastFrame)
@@ -931,6 +967,7 @@ void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquipped, bool bSwapping)
 		// Set EquippedWeapon to the newly spawned Weapon
 		EquippedWeapon = WeaponToEquipped;
 		EquippedWeapon->SetItemState(EItemState::EIS_Equipped);
+		UE_LOG(LogTemp, Warning, TEXT("EquipWeapon"));
 	}
 
 }
@@ -944,6 +981,7 @@ void AShooterCharacter::DropWeapon()
 
 		EquippedWeapon->SetItemState(EItemState::EIS_Falling);
 		EquippedWeapon->ThrowWeapon();
+		UE_LOG(LogTemp, Warning, TEXT("DropWeapon"));
 	}
 }
 
@@ -1199,6 +1237,7 @@ void AShooterCharacter::GetPickupItem(AItem* Item)
 			Weapon->SetSlotIndex(Inventory.Num());
 			Inventory.Add(Weapon);
 			Weapon->SetItemState(EItemState::EIS_PickedUp);
+			UE_LOG(LogTemp, Warning, TEXT("GetPickupItem"));
 		}
 		else // no room to store
 		{

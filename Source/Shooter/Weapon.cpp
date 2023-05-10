@@ -3,7 +3,7 @@
 
 #include "Weapon.h"
 
-AWeapon::AWeapon():
+AWeapon::AWeapon() :
 
 	ThrowWeaponTime(0.7f),
 	bFalling(false),
@@ -25,7 +25,12 @@ AWeapon::AWeapon():
 
 	// ClipBoneDefault
 	ClipBoneName(TEXT("smg_clip")),
-	SlideDisplacement(0)
+	SlideDisplacement(0.f),
+	SlideDisplacementTime(0.2f),
+	bMovingSlide(false),
+	MaxSlideDisplacement(4.f),
+	MaxRecoilRotation(20.f),
+	bAutomatic(true)
 
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +47,8 @@ void AWeapon::Tick(float DeltaTime)
 
 		GetItemMesh()->SetWorldRotation(MeshRotation, false, nullptr, ETeleportType::TeleportPhysics);
 	}
+	// Move pistol slide
+	UpdateSlideDisplacement();
 }
 
 void AWeapon::ThrowWeapon()
@@ -76,7 +83,7 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	const FString WeaponTablePath = TEXT("DataTable'/Game/_Game/DataTable/WeaponDataTable.WeaponDataTable'");
+	const FString WeaponTablePath = TEXT("DataTable'/Game/_Game/DataTable/Weapon_Data.Weapon_Data'");
 	UDataTable* WeaponTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *WeaponTablePath));
 	if (WeaponTableObject)
 	{
@@ -123,6 +130,7 @@ void AWeapon::OnConstruction(const FTransform& Transform)
 			MuzzleFlash = WeaponDataRow->MuzzleFlash;
 			FireSound = WeaponDataRow->FireSound;
 			BoneToHide = WeaponDataRow->BoneToHide;
+			bAutomatic = WeaponDataRow->bAutomatic;
 		
 		}
 
@@ -170,4 +178,26 @@ void AWeapon::ReloadAmmo(int32 Amount)
 bool AWeapon::ClipIsFull()
 {
 	return Ammo >= MagazineCapacity;
+}
+
+void AWeapon::StartSlideTimer()
+{
+	bMovingSlide = true;
+	GetWorldTimerManager().SetTimer(SlideTimer, this, &AWeapon::FinishMovingSlide, SlideDisplacementTime);
+}
+
+void AWeapon::FinishMovingSlide()
+{
+	bMovingSlide = false;
+}
+
+void AWeapon::UpdateSlideDisplacement()
+{
+	if (SlideDisplacementCurve && bMovingSlide)
+	{
+		const float ElapsedTime{ GetWorldTimerManager().GetTimerElapsed(SlideTimer) };
+		const float CurveValue{ SlideDisplacementCurve->GetFloatValue(ElapsedTime) };
+		SlideDisplacement = CurveValue * MaxSlideDisplacement;
+		RecoilRotation = CurveValue * MaxRecoilRotation;
+	}
 }
